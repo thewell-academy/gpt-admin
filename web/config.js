@@ -1,4 +1,1 @@
-// web/config.js
-window.serverConfig = {
-  serverUrl: "http://gpt.thewell-academy.com" // Default or production server URL
-};
+window.serverConfig = { serverUrl: 'http://172.30.1.51:8000' };

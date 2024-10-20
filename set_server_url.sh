@@ -14,14 +14,14 @@ fi
 
 # Define server URLs for each branch
 LOCAL_URL="http://$LOCAL_IP:8000"
-REMOTE_URL="https://your-remote-server.com"
+REMOTE_URL="http://gpt.thewell-academy.com/"
 
 CONFIG_FILE="web/config.js"
 
-if [ "$BRANCH" == "develop" ]; then
+if [ "$BRANCH" = "develop" ]; then
     echo "Setting server URL to local environment for develop branch"
     echo "window.serverConfig = { serverUrl: '$LOCAL_URL' };" > $CONFIG_FILE
-elif [ "$BRANCH" == "main" ]; then
+elif [ "$BRANCH" = "main" ]; then
     echo "Setting server URL to remote environment for main branch"
     echo "window.serverConfig = { serverUrl: '$REMOTE_URL' };" > $CONFIG_FILE
 else
