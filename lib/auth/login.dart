@@ -84,7 +84,8 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 60.0, bottom: 20.0, left: 20.0, right: 20.0),
+                  top: 60.0, bottom: 20.0, left: 20.0, right: 20.0
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,8 +173,10 @@ class _LoginPageState extends State<LoginPage> {
                           _switchToMainPage();
                         } else {
                           _showLoginFailedDialog(response.statusCode);
-                          setState((){userId = "";});
-                          setState((){password = "";});
+                          setState((){
+                            userId = "";
+                            password = "";
+                          });
                         }
                         setState(() {_showSpinner = false;});
                       }

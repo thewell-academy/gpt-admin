@@ -90,7 +90,7 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
       body: jsonEncode(usersData)
     );
 
-    Navigator.of(context).pop(); // Close the dialog after submission
+    Navigator.of(context).pop();
   }
 
     @override
@@ -172,7 +172,9 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
             child: const Text("취소"),
           ),
           ElevatedButton(
-            onPressed: _submitData,
+            onPressed: () {
+              _submitData();
+            },
             child: const Text("추가"),
           ),
         ],

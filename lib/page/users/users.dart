@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:thewell_gpt_admin/page/users/add_user_dialog.dart';
 import 'package:thewell_gpt_admin/page/users/user_item.dart';
 import 'package:http/http.dart' as http;
 import 'package:thewell_gpt_admin/util/util.dart';
+import 'dart:convert';
 
 class Users extends StatefulWidget {
   @override
@@ -16,6 +18,9 @@ class _UsersState extends State<Users> {
   List<UserItem> users = [];
   bool isLoading = true;
   TextEditingController searchController = TextEditingController();
+
+  bool passwordReady = false;
+  String fetchedPassword = "";
 
   @override
   void initState() {
@@ -31,18 +36,25 @@ class _UsersState extends State<Users> {
     final response = await http.get(
       Uri.parse("$serverUrl/admin/get/users")
     );
-    print(response.body);
 
+    // Step 2: Parse the valid JSON string to a list of dynamic maps
+    List<dynamic> decodedList = json.decode(response.body);
 
-    users = List.generate(
-      100,
-          (index) =>
-          UserItem(
-            id: 'user_$index',
-            name: 'User $index',
-            email: 'user$index@example.com',
-          ),
-    );
+    // Step 3: Convert each item in the list to a Map<String, String>
+    List<Map<String, String>> listOfResponse = decodedList.map((item) {
+      // Ensure the map has String keys and values
+      return (item as Map<String, dynamic>).map((key, value) {
+        return MapEntry(key.toString(), value.toString());
+      });
+    }).toList();
+
+    users = listOfResponse.map(
+            (e) => UserItem(
+                id: e['id']!,
+                name: e['name']!,
+            )
+    ).toList();
+
     setState(() => isLoading = false);
   }
 
@@ -88,16 +100,32 @@ class _UsersState extends State<Users> {
     );
   }
 
+  Future<void> _fetchPassword(String userId) async {
+    setState(() {
+      passwordReady = false;
+      fetchedPassword = "";
+    });
+
+    final response = await http.get(Uri.parse("$serverUrl/admin/$userId/password"));
+
+    setState(() {
+      fetchedPassword = response.body;
+      passwordReady = true;
+    });
+  }
+
   void _showUserDetails(UserItem user) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("${user.name} 비밀번호"),
-          content: Text("12345678"),
+          content: passwordReady
+            ? Text(fetchedPassword)
+            : const Center(child: CircularProgressIndicator()),
           actions: [
             TextButton(
-              child: Text("닫기"),
+              child: const Text("닫기"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -105,8 +133,14 @@ class _UsersState extends State<Users> {
           ],
         );
       },
-    );
+    ).then((_) {
+      setState(() {
+        fetchedPassword = "";
+        passwordReady = false;
+      });
+    });
   }
+
     @override
     Widget build(BuildContext context) {
       int startIndex = currentPage * 20;
@@ -143,7 +177,9 @@ class _UsersState extends State<Users> {
                     SizedBox(width: 30),
                     IconButton(
                       icon: Icon(Icons.refresh_outlined),
-                      onPressed: () {},
+                      onPressed: () {
+                        _fetchUsers();
+                      },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
                       ),
@@ -205,7 +241,12 @@ class _UsersState extends State<Users> {
                             children: [
                               IconButton(
                                 icon: Icon(Icons.visibility),
-                                onPressed: () => _showUserDetails(user),
+                                onPressed: () async  {
+                                  await _fetchPassword(user.id);
+                                  print(passwordReady);
+                                  print(fetchedPassword);
+                                  _showUserDetails(user);
+                                } ,
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete),

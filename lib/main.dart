@@ -6,13 +6,10 @@ import 'package:thewell_gpt_admin/page/users/users.dart';
 import 'package:thewell_gpt_admin/util/util.dart';
 
 import 'auth/login.dart';
-import 'config.dart';
 
 Future<void> main() async {
   bool isLoggedIn = await checkLoginStatus();
   WidgetsFlutterBinding.ensureInitialized();
-  Config.loadServerUrl();
-  print('Server URL: ${Config.serverUrl}');
   runApp(MyApp(isLoggedIn: isLoggedIn,));
 }
 

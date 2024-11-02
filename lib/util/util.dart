@@ -1,10 +1,12 @@
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:async';  // Import for Timer
+import 'dart:async';
+
+import 'package:thewell_gpt_admin/util/server_config.dart';
 
 
-String serverUrl = "http://172.30.1.51:8000";
+String serverUrl = gptServerUrl;
 
 Timer? _retryTimer;
 
