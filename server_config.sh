@@ -21,5 +21,21 @@ else
 fi
 
 # Export the SERVER_URL as an environment variable
-export THEWELL_GPT_SERVER_URL
+
+# Echo the Dart code into the file
+cat <<EOF > lib/util/server_config.dart
+String get gptServerUrl {
+  const String defaultUrl = 'http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com';
+
+  const String envUrl = '$THEWELL_GPT_SERVER_URL';
+
+  if (envUrl.isEmpty) {
+    return defaultUrl;
+  } else {
+    return envUrl;
+  }
+}
+EOF
+
+
 echo "Using server URL: $THEWELL_GPT_SERVER_URL"

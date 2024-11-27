@@ -1,1 +1,11 @@
-const String gptServerUrl = String.fromEnvironment('THEWELL_GPT_SERVER_URL', defaultValue: 'http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com');
+String get gptServerUrl {
+  const String defaultUrl = 'http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com';
+
+  const String envUrl = 'http://172.30.1.38:8000';
+
+  if (envUrl.isEmpty) {
+    return defaultUrl;
+  } else {
+    return envUrl;
+  }
+}

@@ -26,7 +26,7 @@ Future<void> serverHandShake(Function(String, Color) updateStatus) async {
       // Retry after 5 seconds
       _retryTimer = Timer(const Duration(seconds: 5), () => serverHandShake(updateStatus));
     } else {
-      updateStatus("더웰 GPT 관리자 페이지", Colors.black87);
+      updateStatus("더웰 관리자 페이지", Colors.black87);
       _retryTimer?.cancel();  // Stop retrying if the response is 200
     }
   } on TimeoutException catch (_) {

@@ -73,8 +73,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      // Enable resizing when keyboard appears
+      // Enable resizing when the keyboard appears
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -82,111 +84,131 @@ class _LoginPageState extends State<LoginPage> {
           inAsyncCall: _showSpinner,
           color: Colors.blueAccent,
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 60.0, bottom: 20.0, left: 20.0, right: 20.0
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    '더웰 GPT 관리자 페이지',
-                    style: TextStyle(fontSize: 50.0),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        welcomeText,
-                        style: TextStyle(fontSize: 30.0),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      TextField(
-                        keyboardType: TextInputType.emailAddress,
-                        onChanged: (value) {
-                          userId = value;
-                        },
-                        decoration: InputDecoration(
+            child: Center(
+              child: Container(
+                width: screenWidth * 0.5, // Limit the width to 50% of the screen
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Left-align content
+                  mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                  children: [
+                    const Text(
+                      '더웰 관리자 페이지',
+                      style: TextStyle(fontSize: 50.0),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          welcomeText,
+                          style: const TextStyle(fontSize: 30.0),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) {
+                            userId = value;
+                          },
+                          decoration: InputDecoration(
                             hintText: '관리자 아이디를 입력하세요.',
                             labelText: '아이디',
-                            errorText: _emptyIdField ? '아이디를 입력해주세요.': null ,
-                            labelStyle: _emptyIdField ? TextStyle(color: Colors.red) : null
+                            errorText: _emptyIdField
+                                ? '아이디를 입력해주세요.'
+                                : null,
+                            labelStyle: _emptyIdField
+                                ? const TextStyle(color: Colors.red)
+                                : null,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20.0),
-                      TextField(
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        onChanged: (value) {
-                          password = value;
-                        },
-                        decoration: InputDecoration(
-                          hintText: '관리자 비밀번호를 입력하세요.',
-                          labelText: '비밀번호',
-                          errorText: _emptyPasswordField ? '비밀번호를 입력해주세요.':  null,
-                          labelStyle: _emptyPasswordField ? TextStyle(color: Colors.red): null,
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-
-
-                      if (userId.isEmpty) {
-                        setState((){_emptyIdField = true;});
-                        print("user id empty. _emptyIdField: $_emptyIdField");
-                      }
-                      else { setState((){_emptyIdField = false;});  }
-
-                      if (password.isEmpty) {
-                        setState((){_emptyPasswordField = true;});
-                        print("password empty. _emptyPasswordField: $_emptyPasswordField");
-                      }
-                      else { setState(() {_emptyPasswordField = false;});}
-
-
-                      if (userId.isNotEmpty && password.isNotEmpty) {
-
-                        setState(() {_showSpinner = true;});
-
-                        final url = "$serverUrl/auth/login";
-
-                        final response = await http.post(
-                          Uri.parse(url),
-                          headers: <String, String>{
-                            'Content-Type': 'application/json; charset=UTF-8',
+                        const SizedBox(height: 20.0),
+                        TextField(
+                          obscureText: true,
+                          keyboardType: TextInputType.visiblePassword,
+                          onChanged: (value) {
+                            password = value;
                           },
-                          body: jsonEncode(<String, String>{
-                            'id': userId,
-                            'password': password,
-                          }),
-                        );
-
-                        if (response.statusCode == 200) {
-                          _saveLoginInfo(userId);
-                          _switchToMainPage();
+                          decoration: InputDecoration(
+                            hintText: '관리자 비밀번호를 입력하세요.',
+                            labelText: '비밀번호',
+                            errorText: _emptyPasswordField
+                                ? '비밀번호를 입력해주세요.'
+                                : null,
+                            labelStyle: _emptyPasswordField
+                                ? const TextStyle(color: Colors.red)
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 20.0),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (userId.isEmpty) {
+                          setState(() {
+                            _emptyIdField = true;
+                          });
                         } else {
-                          _showLoginFailedDialog(response.statusCode);
-                          setState((){
-                            userId = "";
-                            password = "";
+                          setState(() {
+                            _emptyIdField = false;
                           });
                         }
-                        setState(() {_showSpinner = false;});
-                      }
-                    },
-                    child: const Text(
-                      '로그인',
-                      style: TextStyle(fontSize: 25.0, color: Colors.white),
+
+                        if (password.isEmpty) {
+                          setState(() {
+                            _emptyPasswordField = true;
+                          });
+                        } else {
+                          setState(() {
+                            _emptyPasswordField = false;
+                          });
+                        }
+
+                        if (userId.isNotEmpty && password.isNotEmpty) {
+                          setState(() {
+                            _showSpinner = true;
+                          });
+
+                          final url = "$serverUrl/auth/login";
+
+                          final response = await http.post(
+                            Uri.parse(url),
+                            headers: <String, String>{
+                              'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                            body: jsonEncode(<String, String>{
+                              'id': userId,
+                              'password': password,
+                            }),
+                          );
+
+                          if (response.statusCode == 200) {
+                            _saveLoginInfo(userId);
+                            _switchToMainPage();
+                          } else {
+                            _showLoginFailedDialog(response.statusCode);
+                            setState(() {
+                              userId = "";
+                              password = "";
+                            });
+                          }
+                          setState(() {
+                            _showSpinner = false;
+                          });
+                        }
+                      },
+                      child: const Text(
+                        '로그인',
+                        style: TextStyle(fontSize: 25.0, color: Colors.white),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

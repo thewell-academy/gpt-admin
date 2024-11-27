@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thewell_gpt_admin/page/dashboard/dashboard.dart';
+import 'package:thewell_gpt_admin/page/questions/questions_main.dart';
 import 'package:thewell_gpt_admin/page/settings/settings.dart';
 import 'package:thewell_gpt_admin/page/users/users.dart';
+import 'package:thewell_gpt_admin/util/server_config.dart';
 import 'package:thewell_gpt_admin/util/util.dart';
 
 import 'auth/login.dart';
@@ -10,6 +12,7 @@ import 'auth/login.dart';
 Future<void> main() async {
   bool isLoggedIn = await checkLoginStatus();
   WidgetsFlutterBinding.ensureInitialized();
+  print("Backend Server Listening: $gptServerUrl");
   runApp(MyApp(isLoggedIn: isLoggedIn,));
 }
 
@@ -36,7 +39,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  String _appTitle = "더웰 GPT 관리자 페이지";
+  String _appTitle = "더웰 앱 관리자 페이지";
   Color _appBarColor = Colors.black87;
 
   @override
@@ -112,6 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return Users();
       case 'Settings':
         return Setting();
+      case 'Questions':
+        return Questions();
       default:
         return const Center(
           child: Text(
@@ -149,7 +154,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 _selectPage('Users');
               },
-              child: Text("사용자 관리"),
+              child: Text("앱 사용자 관리"),
+            ),
+            SizedBox(width: 20),
+            TextButton(
+              onPressed: () {
+                _selectPage('Questions');
+              },
+              child: Text("문제 은행"),
             ),
             SizedBox(width: 20),
             TextButton(
