@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:thewell_gpt_admin/page/questions/question_model/question_model.dart';
@@ -10,7 +11,7 @@ import '../../util/question_types.dart';
 class DefaultQuestionTypeInfo extends StatefulWidget {
   final QuestionModel questionModel;
   // util/question_data_handler.dart -> updateDefaultQuestionInfo()
-  final Function(QuestionModel, String, String, String,String, String, String) onUpdate;
+  final Function(QuestionModel, String, String, String,String, String, String, String) onUpdate;
 
   DefaultQuestionTypeInfo({
     Key? key,
@@ -27,9 +28,46 @@ class _DefaultQuestionTypeInfoState extends State<DefaultQuestionTypeInfo> {
   String? _selectedYear; // Selected year or sub-item
   String? _selectedMonth;
   String? _selectedQuestionNumber;
+  String ? _selectedFilePath;
   String? _selectedFileName; // Store the selected file's name or path
   String? _selectedScore; // Declare in the state class
   String? _selectedQuestionText;
+  Uint8List? _selectedFileBytes; // File bytes for web platforms
+
+  void _fileSelectRouter() async {
+    if (_selectedFilePath != null || _selectedFileBytes != null) {
+      return showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text("사진 삭제"),
+          content: const Text("사진을 삭제하시겠습니까?"),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: const Text("취소"),
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+            ),
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              child: const Text("확인"),
+              onPressed: () {
+                setState(() {
+                  _selectedFileBytes = null;
+                  _selectedFilePath = null;
+                  _selectedFileName = null;
+                });
+                Navigator.pop(context); // Close the dialog
+              },
+            ),
+          ],
+        ),
+      );
+    } else {
+      return _pickFile();
+    }
+  }
 
   void _pickFile() async {
     // Open file picker
@@ -40,7 +78,19 @@ class _DefaultQuestionTypeInfoState extends State<DefaultQuestionTypeInfo> {
     if (result != null) {
       setState(() {
         _selectedFileName = result.files.single.name; // Get the file name
+
+
+        if (kIsWeb) {
+          // Web: Use bytes as no path is available
+          _selectedFileBytes = result.files.single.bytes;
+          _selectedFilePath = null; // Explicitly set to null for clarity
+        } else {
+          // Non-web platforms: Use the file path
+          _selectedFilePath = result.files.single.path;
+          _selectedFileBytes = null; // Explicitly set to null for clarity
+        }
       });
+      widget.questionModel.defaultQuestionInfo.selectedFileBytes = _selectedFileBytes;
     }
   }
 
@@ -53,7 +103,8 @@ class _DefaultQuestionTypeInfoState extends State<DefaultQuestionTypeInfo> {
         _selectedMonth ?? '',
         _selectedQuestionNumber?? '',
         _selectedScore?? '',
-        _selectedQuestionText?? ''
+        _selectedQuestionText?? '',
+        _selectedFilePath?? ''
       );
     }
   }
@@ -135,7 +186,7 @@ class _DefaultQuestionTypeInfoState extends State<DefaultQuestionTypeInfo> {
                 DropdownButton<String>(
                   value: _selectedMonth,
                   hint: const Text("월 선택"),
-                  items: List<String>.generate(12, (index) => "${index+1}월").map((month) {
+                  items: List<String>.generate(12, (index) => "${index+1}").map((month) {
                     return DropdownMenuItem<String>(
                       value: month,
                       child: Text(month),
@@ -238,8 +289,8 @@ class _DefaultQuestionTypeInfoState extends State<DefaultQuestionTypeInfo> {
               child: Column(
                 children: [
                   ElevatedButton(
-                    onPressed: _pickFile,
-                    child: const Text("사진 선택"),
+                    onPressed: _fileSelectRouter,
+                    child: (_selectedFileBytes == null && _selectedFilePath == null) ? const Text("사진 선택") : const Text("사진 삭제"),
                   ),
                   if (_selectedFileName != null)
                     Padding(

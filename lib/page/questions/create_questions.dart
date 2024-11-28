@@ -5,8 +5,7 @@ class CreateQuestionPdfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        "문제 PDF 만들기",
-        style: TextStyle(fontSize: 24),
+          "To be updated"
       ),
     );
   }

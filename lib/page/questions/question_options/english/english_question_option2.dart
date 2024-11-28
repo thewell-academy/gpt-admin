@@ -10,9 +10,12 @@ import '../common/default_question_type_info.dart';
 class EnglishQuestionType2 extends StatefulWidget {
 
   final QuestionModel questionModel;
+  final VoidCallback onDelete;
   const EnglishQuestionType2({
     required Key key,
     required this.questionModel,
+    required this.onDelete,
+
   }) : super(key: key);
 
   @override
@@ -76,6 +79,7 @@ class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
             DefaultQuestionAnswerOptionInfo(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              onDelete: widget.onDelete,
             ),
 
             SizedBox(height: 16),

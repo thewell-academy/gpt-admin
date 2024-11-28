@@ -23,6 +23,7 @@ class QuestionDataHandler {
       String questionNumber,
       String questionScore,
       String questionText,
+      String filePath
       ) {
     questionModel.defaultQuestionInfo.exam = exam;
     questionModel.defaultQuestionInfo.examYear = int.tryParse(examYear) ?? 0;
@@ -30,6 +31,7 @@ class QuestionDataHandler {
     questionModel.defaultQuestionInfo.questionNumber = int.tryParse(questionNumber) ?? 0;
     questionModel.defaultQuestionInfo.questionScore = int.tryParse(questionScore)?? 0;
     questionModel.defaultQuestionInfo.questionText = questionText;
+    questionModel.defaultQuestionInfo.filePath = filePath;
   }
 
   static void updateHTMLRenderedText(
@@ -37,7 +39,7 @@ class QuestionDataHandler {
       String note,
       String htmlText,
       ) {
-    questionModel.additionalData[note] = htmlText;
+    questionModel.questionContentTextMap[note] = htmlText;
   }
 
   static void updateAnswerOptionsInfo(

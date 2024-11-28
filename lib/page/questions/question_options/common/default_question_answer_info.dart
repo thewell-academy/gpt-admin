@@ -8,11 +8,13 @@ class DefaultQuestionAnswerOptionInfo extends StatefulWidget {
   final QuestionModel questionModel;
   // util/question_data_handler.dart -> updateDefaultQuestionInfo()
   final Function(QuestionModel, String, String, String,String, String, String, String) onUpdate;
+  final VoidCallback onDelete; // Callback for deletion
 
   const DefaultQuestionAnswerOptionInfo({
     Key? key,
     required this.questionModel,
-    required this.onUpdate
+    required this.onUpdate,
+    required this.onDelete,
   }): super(key: key);
 
   @override
@@ -150,7 +152,7 @@ class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerO
         ),
         const SizedBox(height: 16), // Add spacing before the delete button
         ElevatedButton(
-          onPressed: () {},
+          onPressed: widget.onDelete,
           style: ElevatedButton.styleFrom(
             primary: Colors.red, // Red color to indicate a delete action
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),

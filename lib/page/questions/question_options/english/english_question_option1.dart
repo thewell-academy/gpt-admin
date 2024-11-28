@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../question_model/question_model.dart';
+import '../../question_router.dart';
 import '../../util/latex_input_renderer.dart';
 import '../../util/question_data_handler.dart';
 import '../common/default_question_answer_info.dart';
@@ -10,9 +11,13 @@ import '../common/default_question_type_info.dart';
 class EnglishQuestionType1 extends StatefulWidget {
 
   final QuestionModel questionModel;
+  final VoidCallback onDelete;
+
   const EnglishQuestionType1({
     required Key key,
     required this.questionModel,
+    required this.onDelete,
+
   }) : super(key: key);
 
   @override
@@ -53,6 +58,7 @@ class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
             DefaultQuestionAnswerOptionInfo(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              onDelete: widget.onDelete,
             ),
 
             SizedBox(height: 16),

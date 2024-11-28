@@ -9,26 +9,39 @@ import 'package:thewell_gpt_admin/page/questions/util/question_types.dart';
 import 'package:thewell_gpt_admin/page/questions/util/question_data_handler.dart';
 
 class QuestionPageState {
+  int questionId;
   String selectedSubject;
-  String? selectedQuestionType;
   QuestionModel questionModel;
+  String? selectedQuestionType;
 
   QuestionPageState({
+    required this.questionId,
     required this.selectedSubject,
     required this.questionModel,
     this.selectedQuestionType,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "questionId": questionId,
+      "subject": selectedSubject,
+      "questionModel": questionModel.toJson(),
+      "questionType": selectedQuestionType?? ""
+    };
+  }
 }
 
 // Widget for each question page
 class QuestionPage extends StatefulWidget {
   final QuestionPageState pageState;
   final List<String> questionTypes;
+  final Function(int) onDelete;
 
   QuestionPage({
     required Key key,
     required this.pageState,
     required this.questionTypes,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -59,9 +72,17 @@ class _QuestionPageStateWidget extends State<QuestionPage> {
 
 
     if (questionType1List.contains(selectedType)) {
-      return EnglishQuestionType1(questionModel: _questionModel, key: ValueKey(widget.pageState),);
+      return EnglishQuestionType1(
+        questionModel: _questionModel,
+        key: ValueKey(widget.pageState),
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
     } else if (questionType2List.contains(selectedType)) {
-      return EnglishQuestionType2(questionModel: _questionModel, key: ValueKey(widget.pageState),);
+      return EnglishQuestionType2(
+        questionModel: _questionModel,
+        key: ValueKey(widget.pageState),
+        onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
     }
     else {
       return SizedBox.shrink();

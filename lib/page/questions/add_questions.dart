@@ -5,6 +5,7 @@ import 'package:thewell_gpt_admin/page/questions/question_model/default_question
 import 'package:thewell_gpt_admin/page/questions/question_model/question_model.dart';
 import 'package:thewell_gpt_admin/page/questions/question_router.dart';
 import 'package:thewell_gpt_admin/page/questions/util/question_types.dart';
+import 'package:thewell_gpt_admin/page/questions/util/save_questions.dart';
 
 class AddQuestionPage extends StatefulWidget {
   @override
@@ -16,11 +17,13 @@ class _AddQuestionState extends State<AddQuestionPage> {
   final List<QuestionPageState> _questionPages = []; // List of question page states
 
   final _questionTypes = questionTypes;
+  late final List<int?> questionAddResponseCodeList = [];
 
   void _addQuestionPage() {
     setState(() {
       if (_selectedSubject != null) {
         _questionPages.add(QuestionPageState(
+          questionId: _questionPages.length,
           selectedSubject: _selectedSubject!,
           questionModel: QuestionModel(
               subject: _selectedSubject!,
@@ -30,6 +33,12 @@ class _AddQuestionState extends State<AddQuestionPage> {
           selectedQuestionType: null,
         ));
       }
+    });
+  }
+
+  void _removeQuestionPage(int id) {
+    setState(() {
+      _questionPages.removeWhere((page) => page.questionId == id);
     });
   }
 
@@ -65,9 +74,10 @@ class _AddQuestionState extends State<AddQuestionPage> {
               if (_selectedSubject != null)
                 ..._questionPages.map(
                       (pageState) => QuestionPage(
-                    key: ValueKey(pageState),
-                    pageState: pageState,
-                    questionTypes: _questionTypes[_selectedSubject!]!,
+                        key: ValueKey(pageState),
+                        pageState: pageState,
+                        questionTypes: _questionTypes[_selectedSubject!]!,
+                        onDelete: _removeQuestionPage,
                   ),
                 ),
 
@@ -93,11 +103,14 @@ class _AddQuestionState extends State<AddQuestionPage> {
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // Save logic
-                    for (var page in _questionPages) {
-                      // print("Subject: ${page.selectedSubject}, Question Type: ${page.selectedQuestionType} Question Data: ${page.questionModel}");
-                      print(page.questionModel);
-                    }
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setState) {
+                          return _buildSaveConfirmationDialog(context, setState);
+                        },
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.save),
                   label: const Text("저장하기"),
@@ -108,5 +121,268 @@ class _AddQuestionState extends State<AddQuestionPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildSaveConfirmationDialog(
+      BuildContext context, void Function(void Function()) setState) {
+    bool isSaving = false;
+    bool isSuccess = false;
+
+    List<QuestionModel> notValidQuestionModelList = [];
+    for (var element in _questionPages) {
+      if (!element.questionModel.isValid()) {
+        notValidQuestionModelList.add(element.questionModel);
+      }
+    }
+
+    // 문제 데이터가 정확히 입력되지 않은 경우
+    if (notValidQuestionModelList.isNotEmpty || _questionPages.isEmpty) {
+      return CupertinoAlertDialog(
+        title: Text("문제 데이터 검증 필요"),
+        content: Column(
+          children: [
+            Text("문제 데이터를 모두 입력했는지 다시 확인해주세요."),
+            ...notValidQuestionModelList.map(
+                    (q) =>
+                        Text(
+                          "${q.defaultQuestionInfo.exam} ${q.defaultQuestionInfo.examYear}년 ${q.defaultQuestionInfo.examMonth}월 ${q.defaultQuestionInfo.questionNumber}번",
+                          style: TextStyle(fontSize: 14),
+                        )
+            )
+          ],
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: Text("확인"),
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+            },
+          ),
+        ],
+      );
+    }
+
+    // 문제 데이터가 정확히 입력된 경우 서버에 전달 후 결과 받기
+    // 중복되는 문제 있으면 어떻게 할건지 물어보기
+    return CupertinoAlertDialog(
+      title: Text("문제 저장하기"),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+           Text("문제를 저장하시겠습니까?"),
+          const SizedBox(height: 16),
+          ..._questionPages.map((page) {
+            return Text(
+              "- ${page.questionModel.defaultQuestionInfo.exam} ${page.questionModel.defaultQuestionInfo.examYear} ${page.questionModel.defaultQuestionInfo.examMonth > 0 ? "${page.questionModel.defaultQuestionInfo.examMonth}월": ''} ${page.questionModel.defaultQuestionInfo.questionNumber}번",
+              style: TextStyle(fontSize: 14),
+            );
+          }).toList(),
+        ],
+      ),
+      actions: [
+        if (!isSaving && !isSuccess)
+          CupertinoDialogAction(
+            child: Text("취소"),
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+            },
+          ),
+        if (!isSaving && !isSuccess)
+          CupertinoDialogAction(
+            child: Text("저장하기"),
+            isDestructiveAction: false,
+            onPressed: () async {
+              // Indicate that saving is in progress
+              setState(() {
+                isSaving = true;
+              });
+              List<int?> responseCodes = await getQuestionSaveResult(_questionPages, false);
+              setState(() {
+                isSaving = false;
+                isSuccess = responseCodes.every((code) => code == 200); // Check if all requests succeeded
+              });
+              Navigator.pop(context);
+              Future.microtask(() {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (context) {
+                    return _buildSecondSaveConfirmationDialog(
+                      context,
+                      _questionPages,
+                      responseCodes,
+                      setState,
+                    );
+                  },
+                );
+              });
+            },
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSecondSaveConfirmationDialog(
+      BuildContext context,
+      List<QuestionPageState> questionPages,
+      List<int?> responseCodes,
+      void Function(void Function()) setState,
+      ) {
+    bool isSaving = false;
+    bool isSuccess = responseCodes.every((code) => code == 200);
+
+    if (isSuccess) {
+      return CupertinoAlertDialog(
+        content: Text("저장되었습니다."),
+        actions: [
+          CupertinoDialogAction(
+            child: Text("확인"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    } else {
+      List<int> replaceCandidateIndexList = responseCodes
+          .asMap()
+          .entries
+          .where((entry) => entry.value == 203)
+          .map((entry) => entry.key)
+          .toList();
+
+      List<QuestionPageState> replaceCandidatesList = replaceCandidateIndexList
+          .map((index) => questionPages[index])
+          .toList();
+
+      Map<int, String> userSelections = {
+        for (var index in replaceCandidateIndexList) index: "덮어쓰기",
+      };
+
+      return StatefulBuilder(
+        builder: (context, localSetState) {
+          return CupertinoAlertDialog(
+            title: Text("중복된 문제 처리"),
+            content: Column(
+              children: [
+                Text("다음 문제들이 중복되었습니다. 처리 방법을 선택해주세요:"),
+                SizedBox(height: 16),
+                ...replaceCandidatesList.map((page) {
+                  int questionId = page.questionId;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "문제 ID: $questionId",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 8),
+                      CupertinoSegmentedControl<String>(
+                        groupValue: userSelections[questionId],
+                        children: {
+                          "덮어쓰기": Text("덮어쓰기"),
+                          "기존 문제 유지": Text("기존 문제 유지"),
+                        },
+                        onValueChanged: (value) {
+                          localSetState(() {
+                            userSelections[questionId] = value!;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 16),
+                    ],
+                  );
+                }).toList(),
+              ],
+            ),
+            actions: [
+              CupertinoDialogAction(
+                child: Text("취소"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoDialogAction(
+                child: isSaving ? CupertinoActivityIndicator() : Text("저장"),
+                onPressed: () async {
+                  localSetState(() {
+                    isSaving = true;
+                  });
+
+                  // Filter for "덮어쓰기" selection
+                  List<QuestionPageState> replaceSelectedList = replaceCandidatesList
+                      .where((page) {
+                    int questionId = page.questionId;
+                    return userSelections[questionId] == "덮어쓰기";
+                  })
+                      .toList();
+
+                  if (replaceSelectedList.isEmpty) {
+                    // All questions are marked as "기존 문제 유지"
+                    localSetState(() {
+                      isSaving = false;
+                    });
+
+                    Navigator.pop(context); // Close the current dialog
+
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoAlertDialog(
+                          content: Text("중복을 제외한 모든 문제가 저장되었습니다."),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text("확인"),
+                              onPressed: () {
+                                Navigator.pop(context); // Close the result dialog
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    return;
+                  }
+
+                  // Send the replace requests for selected questions
+                  List<int?> replaceRequestResponseList =
+                  await getQuestionSaveResult(replaceSelectedList, true);
+
+                  localSetState(() {
+                    isSaving = false;
+                  });
+
+                  Navigator.pop(context); // Close the current dialog
+
+                  // Show the result dialog based on the replace result
+                  bool replaceSuccess =
+                  replaceRequestResponseList.every((code) => code == 200);
+
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        content: Text(
+                          replaceSuccess
+                              ? "덮어쓰기에 성공했습니다."
+                              : "덮어쓰기에 실패했습니다. 다시 시도해주세요.",
+                        ),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: Text("확인"),
+                            onPressed: () {
+                              Navigator.pop(context); // Close the result dialog
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
