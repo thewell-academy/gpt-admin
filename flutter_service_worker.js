@@ -4,7 +4,7 @@ const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
   "flutter.js": "a85fcf6324d3c4d3ae3be1ae4931e9c5",
-"main.dart.js": "fdf1a41606bb92f4433b85121e02e9be",
+"main.dart.js": "f5f13afb17831b4362aef8ad41495e38",
 "config.js": "d41d8cd98f00b204e9800998ecf8427e",
 "assets/FontManifest.json": "00d912acf0704e61a045e7b030237b44",
 "assets/fonts/TimesTen.ttf": "306c803d253ccc5c9faca2c14241a14f",
@@ -99,7 +99,7 @@ const RESOURCES = {
 "assets/packages/flutter_tex/js/katex/katex.min.js": "91c4a91ef515a0d911078b770345ac51",
 "assets/packages/flutter_tex/js/katex/katex.js": "6a42d26befadf4cadea19a9978c48396",
 "assets/packages/flutter_tex/js/katex/index.html": "f0b07d87f116752c2c8de2882f9db878",
-"/": "fa28fe058de23a01875acb03ae5ebffc",
+"/": "67f89dfe8658b7dd620b92e379a5d71e",
 "assets/packages/flutter_tex/js/katex/contrib/copy-tex.js": "092e27b92653a287861050f925dfa39d",
 "assets/packages/flutter_tex/js/katex/contrib/auto-render.mjs": "29c8c1d133e8c6b36f68ca003344b4f2",
 "assets/packages/flutter_tex/js/katex/contrib/copy-tex.css": "0ba86b0c9c4ca9b0294bfc1fe983d6f7",
@@ -256,7 +256,7 @@ const RESOURCES = {
 "assets/assets/html_tutorial.html": "1fd1d380e90bb4f91e9f448bcfa47b04",
 "assets/NOTICES": "587c5fc1b7811bfce9a1297c8a982717",
 "assets/AssetManifest.json": "bad1e3d1ef946adea1967bcba2e39a38",
-"index.html": "fa28fe058de23a01875acb03ae5ebffc",
+"index.html": "67f89dfe8658b7dd620b92e379a5d71e",
 "manifest.json": "8631660c20c1acdcf827d1309e057610",
 "canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
 "canvaskit/profiling/canvaskit.js": "c21852696bc1cc82e8894d851c01921a",
