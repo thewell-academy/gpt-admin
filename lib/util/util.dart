@@ -16,7 +16,7 @@ Future<void> serverHandShake(Function(String, Color) updateStatus) async {
     String? deviceId = await PlatformDeviceId.getDeviceId;
 
     final response = await http
-        .get(Uri.parse('$serverUrl/ping'))
+        .get(Uri.parse('$serverUrl/ping'), headers: {'Content-Type': 'application/json', 'Origin': 'https://thewell-academy.github.io',})
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode != 200) {
