@@ -30389,7 +30389,7 @@ aI:function aI(a,b,c){this.a=a
 this.b=b
 this.$ti=c},
 aPr:function aPr(a){this.a=a},
-aUD(a){return A.aaN(new A.aPz(a,null),t.Wd)},
+aUD(a,b){return A.aaN(new A.aPz(a,b),t.Wd)},
 b3_(a,b,c){return A.aaN(new A.aQi(a,c,b,null),t.Wd)},
 aaN(a,b){return A.biC(a,b,b)},
 biC(a,b,c){var s=0,r=A.T(c),q,p=2,o,n=[],m,l
@@ -31919,8 +31919,9 @@ var $async$wL=A.P(function(b,c){if(b===1){p=c
 s=q}while(true)switch(s){case 0:q=3
 s=6
 return A.a3(A.apH(),$async$wL)
-case 6:s=7
-return A.a3(A.aUD(A.jg(A.i($.Qd())+"/ping")).Ny(0,B.ib),$async$wL)
+case 6:m=t.N
+s=7
+return A.a3(A.aUD(A.jg(A.i($.Qd())+"/ping"),A.a5(["Content-Type","application/json","Origin","https://thewell-academy.github.io"],m,m)).Ny(0,B.ib),$async$wL)
 case 7:o=c
 if(o.b!==200){a.$2("\uc11c\ubc84 \uc624\ub958",B.fY)
 $.aNK=A.ck(B.ib,new A.aQy(a))}else{a.$2("\ub354\uc6f0 \uad00\ub9ac\uc790 \ud398\uc774\uc9c0",B.a1)
@@ -108641,7 +108642,7 @@ vT(){var s=0,r=A.T(t.H),q=this,p,o,n
 var $async$vT=A.P(function(a,b){if(a===1)return A.Q(b,r)
 while(true)switch(s){case 0:q.W(new A.aLP(q))
 s=2
-return A.a3(A.aUD(A.jg(A.i($.Qd())+"/admin/get/users")),$async$vT)
+return A.a3(A.aUD(A.jg(A.i($.Qd())+"/admin/get/users"),null),$async$vT)
 case 2:p=b
 o=J.eX(B.bv.dV(0,A.b2b(A.b0O(p.e).c.a.i(0,"charset")).dV(0,p.w)),new A.aLQ(),t.GU).eY(0)
 n=A.Y(o).h("F<1,lP>")
@@ -108662,7 +108663,7 @@ var $async$Ah=A.P(function(b,c){if(b===1)return A.Q(c,r)
 while(true)switch(s){case 0:q.W(new A.aLM(q))
 p=A
 s=2
-return A.a3(A.aUD(A.jg(A.i($.Qd())+"/admin/"+a+"/password")),$async$Ah)
+return A.a3(A.aUD(A.jg(A.i($.Qd())+"/admin/"+a+"/password"),null),$async$Ah)
 case 2:q.W(new p.aLN(q,c))
 return A.R(null,r)}})
 return A.S($async$Ah,r)},
