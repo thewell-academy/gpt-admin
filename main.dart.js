@@ -33074,7 +33074,7 @@ break
 case 1:return A.R(q,r)
 case 2:return A.Q(o,r)}})
 return A.S($async$aQw,r)},
-aUG(){var s="http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com"
+aUG(){var s="//thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com"
 return s},
 bjl(a){if(isFinite(a))return A.d0(0,B.d.bh(a*1000),0)
 else if(a==1/0||a==-1/0)return B.am3
