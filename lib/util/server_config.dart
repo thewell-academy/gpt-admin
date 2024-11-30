@@ -1,7 +1,7 @@
 String get gptServerUrl {
-  const String defaultUrl = 'http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com';
+  const String defaultUrl = 'https://www.thewell-academy.com';
 
-  const String envUrl = 'http://thewell-gpt-lb-101888234.ap-northeast-2.elb.amazonaws.com';
+  const String envUrl = 'https://www.thewell-academy.com';
 
   if (envUrl.isEmpty) {
     return defaultUrl;
