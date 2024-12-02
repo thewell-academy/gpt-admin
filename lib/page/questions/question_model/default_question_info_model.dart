@@ -4,9 +4,7 @@ class DefaultQuestionInfoModel {
   String exam;
   int examYear;
   int examMonth;
-  // int questionNumber;
-  // int questionScore;
-  // String questionText;
+  String grade;
   String filePath;
   Uint8List? selectedFileBytes;
 
@@ -14,9 +12,7 @@ class DefaultQuestionInfoModel {
     this.exam = '',
     this.examYear = 0,
     this.examMonth = 0,
-    // this.questionNumber = 0,
-    // this.questionScore = 0,
-    // this.questionText = '',
+    this.grade = '',
     this.filePath = '',
     this.selectedFileBytes
   });
@@ -26,9 +22,7 @@ class DefaultQuestionInfoModel {
       'exam': exam,
       'examYear': examYear,
       'examMonth': examMonth,
-      // 'questionNumber': questionNumber,
-      // 'questionScore': questionScore,
-      // 'questionText': questionText,
+      'grade': grade,
       'filePath': filePath
     };
   }

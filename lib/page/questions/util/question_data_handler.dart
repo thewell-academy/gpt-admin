@@ -19,6 +19,7 @@ class QuestionDataHandler {
       String exam,
       String examYear,
       String examMonth,
+      String grade,
       String filePath
       ) {
     questionModel.defaultQuestionInfo.exam = exam;
