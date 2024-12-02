@@ -11,7 +11,7 @@ import '../../util/question_types.dart';
 class DefaultQuestionPrefix extends StatefulWidget {
   final QuestionModel questionModel;
   // util/question_data_handler.dart -> updateDefaultQuestionInfo()
-  final Function(QuestionModel, String, String, String, String) onUpdate;
+  final Function(QuestionModel, String, String, String, String, String) onUpdate;
 
   DefaultQuestionPrefix({
     Key? key,
@@ -27,11 +27,9 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
   String? _selectedExam; // Selected exam type (e.g., "수능" or "모의고사")
   String? _selectedYear; // Selected year or sub-item
   String? _selectedMonth;
-  // String? _selectedQuestionNumber;
+  String? _selectedGrade;
   String ? _selectedFilePath;
   String? _selectedFileName; // Store the selected file's name or path
-  // String? _selectedScore; // Declare in the state class
-  // String? _selectedQuestionText;
   Uint8List? _selectedFileBytes; // File bytes for web platforms
 
   void _fileSelectRouter() async {
@@ -101,9 +99,7 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
         _selectedExam!,
         _selectedYear!,
         _selectedMonth ?? '',
-        // _selectedQuestionNumber?? '',
-        // _selectedScore?? '',
-        // _selectedQuestionText?? '',
+        _selectedGrade ?? '',
         _selectedFilePath?? ''
       );
     }
@@ -176,32 +172,67 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                   );
                 }).toList(),
               ),
-              if (_selectedExam == "모의고사") ...[
-                const SizedBox(height: 16),
-                Text(
-                  "월 선택:",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                DropdownButton<String>(
-                  value: _selectedMonth,
-                  hint: const Text("월 선택"),
-                  items: List<String>.generate(12, (index) => "${index+1}").map((month) {
-                    return DropdownMenuItem<String>(
-                      value: month,
-                      child: Text(month),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedMonth = value!;
-                    });
-                    _updateParent();
-                    // Handle month selection logic if needed
-                  },
-                ),
+              if (_selectedExam == "모의고사")
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          "학년 선택",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButton<String>(
+                          value: _selectedGrade,
+                          hint: const Text("학년 선택"),
+                          items: List<String>.generate(3, (index) => "고${index+1}").map((month) {
+                            return DropdownMenuItem<String>(
+                              value: month,
+                              child: Text(month),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedGrade = value!;
+                            });
+                            _updateParent();
+                            // Handle month selection logic if needed
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 20,),
+                    Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          "월 선택",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButton<String>(
+                          value: _selectedMonth,
+                          hint: const Text("월 선택"),
+                          items: List<String>.generate(12, (index) => "${index+1}").map((month) {
+                            return DropdownMenuItem<String>(
+                              value: month,
+                              child: Text(month),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedMonth = value!;
+                            });
+                            _updateParent();
+                            // Handle month selection logic if needed
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ],
-            ],
           ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
