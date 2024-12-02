@@ -140,6 +140,7 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
               ),
             ],
           ),
+          SizedBox(height: 16),
         ],
       )
     );

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:thewell_gpt_admin/page/questions/question_model/question_model.dart';
 import 'package:thewell_gpt_admin/page/questions/question_options/english/english_question_option1.dart';
 import 'package:thewell_gpt_admin/page/questions/question_options/english/english_question_option2.dart';
+import 'package:thewell_gpt_admin/page/questions/question_options/english/english_question_option3.dart';
+import 'package:thewell_gpt_admin/page/questions/question_options/english/english_question_option5.dart';
+import 'package:thewell_gpt_admin/page/questions/question_options/english/english_question_option6.dart';
 import 'package:thewell_gpt_admin/page/questions/util/question_types.dart';
 import 'package:thewell_gpt_admin/page/questions/util/question_data_handler.dart';
 
@@ -71,17 +74,41 @@ class _QuestionPageStateWidget extends State<QuestionPage> {
     List<String> questionType6List = ["장문 문제2 (43~45)"];
 
 
-    if (questionType1List.contains(selectedType)) {
+    if (questionType1List.contains(selectedType)) { // 기본 문제
       return EnglishQuestionType1(
-        questionModel: _questionModel,
-        key: ValueKey(widget.pageState),
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
           onDelete: () => widget.onDelete(widget.pageState.questionId)
       );
-    } else if (questionType2List.contains(selectedType)) {
+    } else if (questionType2List.contains(selectedType)) { // 글의 순서
       return EnglishQuestionType2(
-        questionModel: _questionModel,
-        key: ValueKey(widget.pageState),
-        onDelete: () => widget.onDelete(widget.pageState.questionId)
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
+    } else if (questionType3List.contains(selectedType)) { // 주어진 문장 넣기
+      return EnglishQuestionType3(
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
+    } else if (questionType4List.contains(selectedType)) { // 요약문 완성
+      return EnglishQuestionType3(
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
+    } else if (questionType5List.contains(selectedType)) { // 장문 문제1 (41 ~ 42)
+      return EnglishQuestionType5(
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
+      );
+    } else if (questionType6List.contains(selectedType)) { // 장문 문제2 (43 ~ 45)
+      return EnglishQuestionType6(
+          key: ValueKey(widget.pageState),
+          questionModel: _questionModel,
+          onDelete: () => widget.onDelete(widget.pageState.questionId)
       );
     }
     else {

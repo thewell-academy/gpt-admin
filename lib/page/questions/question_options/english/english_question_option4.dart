@@ -8,11 +8,11 @@ import '../common/default_question_input_field.dart';
 import '../common/default_question_prefix.dart';
 
 // English Question Option Widget for "글의 목적 / 글의 분위기 / 대의 파악 / 함의 추론 / 도표 이해 / 내용 일치"
-class EnglishQuestionType2 extends StatefulWidget {
+class EnglishQuestionType4 extends StatefulWidget {
 
   final QuestionModel questionModel;
   final VoidCallback onDelete;
-  const EnglishQuestionType2({
+  const EnglishQuestionType4({
     required Key key,
     required this.questionModel,
     required this.onDelete,
@@ -20,10 +20,10 @@ class EnglishQuestionType2 extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EnglishQuestionType2State();
+  State<StatefulWidget> createState() => _EnglishQuestionType4State();
 }
 
-class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
+class _EnglishQuestionType4State extends State<EnglishQuestionType4> {
   String? questionText; // Holds the text input by the user
 
   @override
@@ -40,31 +40,13 @@ class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
             ),
 
             MarkdownInputAndRender(
-              title: '첫 지문',
+              title: '지문',
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),
 
             MarkdownInputAndRender(
-              title: '지문 A',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
-            ),
-
-            MarkdownInputAndRender(
-              title: '지문 B',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
-            ),
-
-            MarkdownInputAndRender(
-              title: '지문 C',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
-            ),
-
-            MarkdownInputAndRender(
-              title: '지문 원본 (정답이 추가된, 완벽한 지문을 적어주세요)',
+              title: '요약문 지문',
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),

@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thewell_gpt_admin/page/questions/question_options/common/default_question_input_field.dart';
 import '../../question_model/question_model.dart';
 import '../../question_router.dart';
 import '../../util/latex_input_renderer.dart';
 import '../../util/question_data_handler.dart';
-import '../common/default_question_answer_info.dart';
-import '../common/default_question_type_info.dart';
+import '../common/default_answer_postfix.dart';
+import '../common/default_question_prefix.dart';
 
 // English Question Option Widget for "글의 목적 / 글의 분위기 / 대의 파악 / 함의 추론 / 도표 이해 / 내용 일치"
 class EnglishQuestionType1 extends StatefulWidget {
@@ -35,11 +36,10 @@ class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DefaultQuestionTypeInfo(
+            DefaultQuestionPrefix(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateDefaultQuestionInfo,
             ),
-            SizedBox(height: 16),
 
             MarkdownInputAndRender(
               title: '문제 지문',
@@ -53,11 +53,13 @@ class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),
 
-            SizedBox(height: 16),
+            DefaultQuestionInputField(
+                questionModel: widget.questionModel,
+                onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+            ),
 
-            DefaultQuestionAnswerOptionInfo(
+            DefaultQuestionPostfix(
               questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               onDelete: widget.onDelete,
             ),
 

@@ -16,21 +16,14 @@ class QuestionDataHandler {
   // 유형, 배점, 시험 연월, 문제 텍스트 등
   static void updateDefaultQuestionInfo(
       QuestionModel questionModel,
-
       String exam,
       String examYear,
       String examMonth,
-      String questionNumber,
-      String questionScore,
-      String questionText,
       String filePath
       ) {
     questionModel.defaultQuestionInfo.exam = exam;
     questionModel.defaultQuestionInfo.examYear = int.tryParse(examYear) ?? 0;
     questionModel.defaultQuestionInfo.examMonth = int.tryParse(examMonth) ?? 0;
-    questionModel.defaultQuestionInfo.questionNumber = int.tryParse(questionNumber) ?? 0;
-    questionModel.defaultQuestionInfo.questionScore = int.tryParse(questionScore)?? 0;
-    questionModel.defaultQuestionInfo.questionText = questionText;
     questionModel.defaultQuestionInfo.filePath = filePath;
   }
 
@@ -44,6 +37,9 @@ class QuestionDataHandler {
 
   static void updateAnswerOptionsInfo(
       QuestionModel questionModel,
+      String selectedQuestionNumber,
+      String selectedScore,
+      String selectedQuestionText,
       String option1,
       String option2,
       String option3,
@@ -52,12 +48,18 @@ class QuestionDataHandler {
       String answer,
       String memo,
       ) {
-    questionModel.answerOptionInfo.option1 = option1;
-    questionModel.answerOptionInfo.option2 = option2;
-    questionModel.answerOptionInfo.option3 = option3;
-    questionModel.answerOptionInfo.option4 = option4;
-    questionModel.answerOptionInfo.option5 = option5;
-    questionModel.answerOptionInfo.answer = int.tryParse(answer)?? 0;
-    questionModel.answerOptionInfo.memo = memo;
+    AnswerOptionInfoModel answerOptionInfoModel = AnswerOptionInfoModel(
+      questionNumber: int.parse(selectedQuestionNumber)?? 0,
+      questionScore: int.parse(selectedScore),
+      questionText: selectedQuestionText,
+      option1: option1,
+      option2: option2,
+      option3: option3,
+      option4: option4,
+      option5: option5,
+      answer: int.parse(answer),
+      memo: memo
+    );
+    questionModel.answerOptionInfoList.add(answerOptionInfoModel);
   }
 }

@@ -8,11 +8,11 @@ import '../common/default_question_input_field.dart';
 import '../common/default_question_prefix.dart';
 
 // English Question Option Widget for "글의 목적 / 글의 분위기 / 대의 파악 / 함의 추론 / 도표 이해 / 내용 일치"
-class EnglishQuestionType2 extends StatefulWidget {
+class EnglishQuestionType6 extends StatefulWidget {
 
   final QuestionModel questionModel;
   final VoidCallback onDelete;
-  const EnglishQuestionType2({
+  const EnglishQuestionType6({
     required Key key,
     required this.questionModel,
     required this.onDelete,
@@ -20,10 +20,10 @@ class EnglishQuestionType2 extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EnglishQuestionType2State();
+  State<StatefulWidget> createState() => _EnglishQuestionType6State();
 }
 
-class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
+class _EnglishQuestionType6State extends State<EnglishQuestionType6> {
   String? questionText; // Holds the text input by the user
 
   @override
@@ -37,12 +37,6 @@ class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
             DefaultQuestionPrefix(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateDefaultQuestionInfo,
-            ),
-
-            MarkdownInputAndRender(
-              title: '첫 지문',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),
 
             MarkdownInputAndRender(
@@ -64,9 +58,19 @@ class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
             ),
 
             MarkdownInputAndRender(
-              title: '지문 원본 (정답이 추가된, 완벽한 지문을 적어주세요)',
+              title: '지문 D',
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+            ),
+
+            DefaultQuestionInputField(
+              questionModel: widget.questionModel,
+              onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+            ),
+
+            DefaultQuestionInputField(
+              questionModel: widget.questionModel,
+              onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
             ),
 
             DefaultQuestionInputField(
