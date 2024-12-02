@@ -7,13 +7,13 @@ class QuestionModel {
   final String subject;
   DefaultQuestionInfoModel defaultQuestionInfo;
   Map<String, dynamic> questionContentTextMap;
-  AnswerOptionInfoModel answerOptionInfo;
+  List<AnswerOptionInfoModel> answerOptionInfoList;
   String type;
 
   QuestionModel({
     required this.subject,
     required this.defaultQuestionInfo,
-    required this.answerOptionInfo,
+    required this.answerOptionInfoList,
     this.type = '',
     Map<String, dynamic>? questionContentTextMap, // Use nullable for custom initialization
   }) : questionContentTextMap = questionContentTextMap ?? {};
@@ -24,7 +24,7 @@ class QuestionModel {
       'subject': subject,
       'defaultQuestionInfo': defaultQuestionInfo.toJson(),
       'questionContentTextMap': questionContentTextMap,
-      'answerOptionInfo': answerOptionInfo.toJson(),
+      'answerOptionInfoList': answerOptionInfoList.map((e) => e.toJson()).toList(),
       'type': type,
     };
   }
@@ -37,7 +37,8 @@ class QuestionModel {
 
   bool isValid() {
 
-    if (subject.isNotEmpty && defaultQuestionInfo.isValid() && questionContentTextMap.isNotEmpty && answerOptionInfo.isValid() && type.isNotEmpty) {
+    if (subject.isNotEmpty && defaultQuestionInfo.isValid() && questionContentTextMap.isNotEmpty
+        && !answerOptionInfoList.map((e) => e.isValid()).contains(false) && type.isNotEmpty) {
       return true;
     } else {
       return false;

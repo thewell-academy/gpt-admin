@@ -34,7 +34,7 @@ Future<List<int?>> getQuestionSaveResult(List<QuestionPageState> questionStateLi
       }
 
     } catch (e) {
-      print("Exception for question ID: ${state.questionId}");
+      print("Router Exception for question ID: ${state.questionId}");
       print("Error: $e");
     }
   }
@@ -66,7 +66,7 @@ Future<int?> sendQuestionWithFile(QuestionPageState questionPageState, bool repl
     return response.statusCode;
 
   } catch (e) {
-    print("Exception for question ID: ${questionPageState.questionId}");
+    print("Exception for requesting with file question ID: ${questionPageState.questionId}");
     print("Error: $e");
   }
 
@@ -87,7 +87,7 @@ Future<int?> sendQuestionWithoutFile(QuestionPageState questionPageState, bool r
     var response =  await request.send();
     return response.statusCode;
   } catch (e) {
-    print("Exception for question ID: ${questionPageState.questionId}");
+    print("Exception for requesting without file question ID: ${questionPageState.questionId}");
     print("Error: $e");
   }
   return null;

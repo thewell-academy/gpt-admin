@@ -1,27 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../question_model/question_model.dart';
 
-class DefaultQuestionAnswerOptionInfo extends StatefulWidget {
+// 문제 번호, 배점, 보기 옵션, 정답 입력
+class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
   // util/question_data_handler.dart -> updateDefaultQuestionInfo()
-  final Function(QuestionModel, String, String, String,String, String, String, String) onUpdate;
-  final VoidCallback onDelete; // Callback for deletion
+  final Function(QuestionModel, String, String, String, String, String, String, String, String, String, String) onUpdate;
 
-  const DefaultQuestionAnswerOptionInfo({
+  const DefaultQuestionInputField({
     Key? key,
     required this.questionModel,
     required this.onUpdate,
-    required this.onDelete,
   }): super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _DefaultQuestionAnswerOptionInfoState();
+  State<StatefulWidget> createState() => _DefaultQuestionInputFieldState();
 }
 
-class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerOptionInfo> {
+class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
+
+  String? _selectedQuestionNumber;
+  String? _selectedScore; // Declare in the state class
+  String? _selectedQuestionText;
 
   String? _selectedAnswer; // Declare in the state class
   String _memo = '';
@@ -44,7 +48,10 @@ class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerO
 
   void _updateParent() {
     widget.onUpdate(
-      widget.questionModel,
+        widget.questionModel,
+        _selectedQuestionNumber?? '',
+        _selectedScore?? '',
+        _selectedQuestionText?? '',
         _options[0],
         _options[1],
         _options[2],
@@ -60,6 +67,79 @@ class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerO
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          "문제 번호",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16,),
+        Container(
+          width: 50,
+          child: TextField(
+            keyboardType: TextInputType.number, // Ensure the keyboard is numeric
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly, // Allow digits only
+            ],
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              setState(() {
+                _selectedQuestionNumber = value;
+              });
+              _updateParent();
+            },
+          ),
+        ),
+        SizedBox(height: 16,),
+        Text(
+          "배점",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16,),
+        Container(
+          width: 100, // Adjust the width to fit the dropdown
+          child: DropdownButton<String>(
+            value: _selectedScore, // Bind to a state variable
+            hint: const Text("Select"), // Placeholder text
+            items: ['2', '3', '4'] // Values for the dropdown
+                .map((value) => DropdownMenuItem(
+              value: value,
+              child: Text(value.toString()),
+            ))
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedScore = value.toString();
+              });
+              _updateParent();
+            },
+            isExpanded: true, // Optional: Make it take the full width
+          ),
+        ),
+        SizedBox(height: 16,),
+        Text(
+          "문제",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16,),
+        Container(
+          child: TextField(
+            // keyboardType: TextInputType.number, // Ensure the keyboard is numeric
+            // inputFormatters: <TextInputFormatter>[
+            //   FilteringTextInputFormatter.digitsOnly, // Allow digits only
+            // ],
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              setState(() {
+                _selectedQuestionText = value;
+              });
+              _updateParent();
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
         const Text(
           "정답 선택지",
           style: TextStyle(
@@ -132,13 +212,13 @@ class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerO
           ),
         ),
         const SizedBox(height: 16), // Add spacing between options
-        Text(
+        const Text(
           "메모",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16), // Add spacing between options
         TextField(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(), // Add border around TextField
             hintText: "단어 힌트 등 메모 적기",
           ),
@@ -149,26 +229,6 @@ class _DefaultQuestionAnswerOptionInfoState extends State<DefaultQuestionAnswerO
             });
             _updateParent();
           },
-        ),
-        const SizedBox(height: 16), // Add spacing before the delete button
-        ElevatedButton(
-          onPressed: widget.onDelete,
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red, // Red color to indicate a delete action
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          ),
-          child: const Text(
-            " - 문제 삭제",
-            style: TextStyle(
-                fontSize: 16, color: Colors.white
-            ),
-          ),
-        ),
-        const SizedBox(height: 16), // Add spacing before the horizontal line
-        const Divider(
-          thickness: 1, // Thickness of the line
-          color: Colors.white, // Color of the line
-          height: 1, // Space around the line
         ),
         const SizedBox(height: 16),
       ],
