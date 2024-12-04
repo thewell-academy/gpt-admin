@@ -140,15 +140,8 @@ class _AddQuestionState extends State<AddQuestionPage> {
       return CupertinoAlertDialog(
         title: Text("문제 데이터 검증 필요"),
         content: Column(
-          children: [
+          children: const [
             Text("문제 데이터를 모두 입력했는지 다시 확인해주세요."),
-            // ...notValidQuestionModelList.map(
-            //         (q) =>
-            //             Text(
-            //               "${q.defaultQuestionInfo.exam} ${q.defaultQuestionInfo.examYear}년 ${q.defaultQuestionInfo.examMonth}월 ${q.answerOptionInfoList[0].}번",
-            //               style: TextStyle(fontSize: 14),
-            //             )
-            // )
           ],
         ),
         actions: [
@@ -171,12 +164,6 @@ class _AddQuestionState extends State<AddQuestionPage> {
         children: [
            Text("문제를 저장하시겠습니까?"),
           const SizedBox(height: 16),
-          // ..._questionPages.map((page) {
-          //   return Text(
-          //     "- ${page.questionModel.defaultQuestionInfo.exam} ${page.questionModel.defaultQuestionInfo.examYear} ${page.questionModel.defaultQuestionInfo.examMonth > 0 ? "${page.questionModel.defaultQuestionInfo.examMonth}월": ''} ${page.questionModel.defaultQuestionInfo.questionNumber}번",
-          //     style: TextStyle(fontSize: 14),
-          //   );
-          // }).toList(),
         ],
       ),
       actions: [
