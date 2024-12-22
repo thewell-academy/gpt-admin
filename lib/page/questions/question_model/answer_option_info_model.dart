@@ -2,18 +2,20 @@
 class AnswerOptionInfoModel {
   int questionNumber = 0;
   int questionScore = 0;
-  String questionText = '';
-  String option1 = '';
-  String option2 = '';
-  String option3 = '';
-  String option4 = '';
-  String option5 = '';
-  int answer = 0;
+  List<String> abcOptionList = [];
+  String questionText;
+  String option1;
+  String option2;
+  String option3;
+  String option4;
+  String option5;
+  int answer;
   String memo = '';
 
   AnswerOptionInfoModel({
     required this.questionNumber,
     required this.questionScore,
+    required this.abcOptionList,
     required this.questionText,
     required this.option1,
     required this.option2,
@@ -28,6 +30,7 @@ class AnswerOptionInfoModel {
     return {
       'questionNumber': questionNumber,
       'questionScore': questionScore,
+      'abcOptionList': abcOptionList,
       'questionText': questionText,
       'options': [option1, option2, option3, option4, option5],
       'selectedAnswer': answer,

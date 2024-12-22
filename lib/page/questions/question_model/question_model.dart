@@ -18,7 +18,6 @@ class QuestionModel {
     Map<String, dynamic>? questionContentTextMap, // Use nullable for custom initialization
   }) : questionContentTextMap = questionContentTextMap ?? {};
 
-  // Convert to JSON-compatible Map
   Map<String, dynamic> toJson() {
     return {
       'subject': subject,
@@ -36,7 +35,6 @@ class QuestionModel {
   }
 
   bool isValid() {
-
     if (subject.isNotEmpty && defaultQuestionInfo.isValid() && questionContentTextMap.isNotEmpty
         && !answerOptionInfoList.map((e) => e.isValid()).contains(false) && type.isNotEmpty) {
       return true;

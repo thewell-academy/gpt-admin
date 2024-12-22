@@ -55,8 +55,7 @@ Future<int?> sendQuestionWithFile(QuestionPageState questionPageState, bool repl
       http.MultipartFile.fromBytes(
         "file", // Ensure this matches the key on the backend
         questionPageState.questionModel.defaultQuestionInfo.selectedFileBytes!,
-        filename: questionPageState.questionModel.defaultQuestionInfo.filePath ??
-            "uploaded_file", // Use a meaningful name if possible
+        filename: questionPageState.questionModel.defaultQuestionInfo.filePath
       ),
     );
 

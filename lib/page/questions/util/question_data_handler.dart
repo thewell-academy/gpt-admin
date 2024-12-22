@@ -40,27 +40,31 @@ class QuestionDataHandler {
       QuestionModel questionModel,
       String selectedQuestionNumber,
       String selectedScore,
+      List<String> abcOptionList,
       String selectedQuestionText,
-      String option1,
-      String option2,
-      String option3,
-      String option4,
-      String option5,
-      String answer,
+      List<String> optionList,
+      String selectedAnswer,
       String memo,
       ) {
+    int questionNumber = int.tryParse(selectedQuestionNumber) ?? 0;
+    int questionScore = int.tryParse(selectedScore) ?? 0;
+    int answer = int.tryParse(selectedAnswer) ?? 0;
     AnswerOptionInfoModel answerOptionInfoModel = AnswerOptionInfoModel(
-      questionNumber: int.parse(selectedQuestionNumber)?? 0,
-      questionScore: int.parse(selectedScore),
-      questionText: selectedQuestionText,
-      option1: option1,
-      option2: option2,
-      option3: option3,
-      option4: option4,
-      option5: option5,
-      answer: int.parse(answer),
-      memo: memo
+        questionNumber: questionNumber,
+        questionScore: questionScore,
+        abcOptionList: abcOptionList,
+        questionText: selectedQuestionText,
+        option1: optionList[0],
+        option2: optionList[1],
+        option3: optionList[2],
+        option4: optionList[3],
+        option5: optionList[4],
+        answer: answer,
+        memo: memo
     );
-    questionModel.answerOptionInfoList.add(answerOptionInfoModel);
+
+    if (answerOptionInfoModel.isValid()) {
+      questionModel.answerOptionInfoList.add(answerOptionInfoModel);
+    }
   }
 }

@@ -9,7 +9,7 @@ class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
   // util/question_data_handler.dart -> updateDefaultQuestionInfo()
-  final Function(QuestionModel, String, String, String, String, String, String, String, String, String, String) onUpdate;
+  final Function(QuestionModel, String, String, List<String>, String, List<String>, String, String) onUpdate;
 
   const DefaultQuestionInputField({
     Key? key,
@@ -37,11 +37,56 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
   );
   final List<String> _options = List.filled(5, '');
 
+  bool abcOptionExists = false; // Default to false
+  final List<String> abcOptionList = [];
+  final List<TextEditingController> _abcControllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _abcControllers.add(
+        TextEditingController()
+    );
+  }
+
+  void _addTextField() {
+    setState(() {
+      _abcControllers.add(
+        TextEditingController()
+      );
+    });
+  }
+
+  void _removeLastTextField() {
+    if (_abcControllers.isNotEmpty) {
+      setState(() {
+        _abcControllers.removeLast();
+        abcOptionList.removeLast();
+      });
+    }
+  }
+
+  void _updateAbcOptionList() {
+    setState(() {
+      abcOptionList.removeWhere((element) => true);
+      for (var element in _abcControllers) {
+        String value = element.text;
+        if (value.isNotEmpty) {
+          abcOptionList.add(value);
+        }
+      }
+    });
+  }
+
   @override
   void dispose() {
     // Dispose of the controllers when the widget is removed
     for (var controller in _optionControllers) {
       controller.dispose();
+    }
+
+    for (var entry in _abcControllers) {
+      entry.dispose();
     }
     super.dispose();
   }
@@ -51,12 +96,9 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
         widget.questionModel,
         _selectedQuestionNumber?? '',
         _selectedScore?? '',
+        abcOptionList,
         _selectedQuestionText?? '',
-        _options[0],
-        _options[1],
-        _options[2],
-        _options[3],
-        _options[4],
+        _options,
         _selectedAnswer?? '',
         _memo
     );
@@ -67,36 +109,36 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "문제 번호",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16,),
-        Container(
+        const SizedBox(height: 16,),
+        SizedBox(
           width: 50,
           child: TextField(
-            keyboardType: TextInputType.number, // Ensure the keyboard is numeric
+            keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly, // Allow digits only
+              FilteringTextInputFormatter.digitsOnly,
             ],
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
             ),
             onChanged: (value) {
               setState(() {
-                _selectedQuestionNumber = value;
+                _selectedQuestionNumber = value.isNotEmpty ? value : null;
+                _updateParent();
               });
-              _updateParent();
             },
           ),
         ),
-        SizedBox(height: 16,),
-        Text(
+        const SizedBox(height: 16,),
+        const Text(
           "배점",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16,),
-        Container(
+        const SizedBox(height: 16,),
+        SizedBox(
           width: 100, // Adjust the width to fit the dropdown
           child: DropdownButton<String>(
             value: _selectedScore, // Bind to a state variable
@@ -116,28 +158,93 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
             isExpanded: true, // Optional: Make it take the full width
           ),
         ),
-        SizedBox(height: 16,),
-        Text(
-          "문제",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 16,),
-        Container(
-          child: TextField(
-            // keyboardType: TextInputType.number, // Ensure the keyboard is numeric
-            // inputFormatters: <TextInputFormatter>[
-            //   FilteringTextInputFormatter.digitsOnly, // Allow digits only
-            // ],
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+        const SizedBox(height: 16,),
+        Column(
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  value: abcOptionExists,
+                  onChanged: (value) {
+                    setState(() {
+                      abcOptionExists = value ?? false;
+                    });
+                  },
+                ),
+                const Text(
+                  "보기 있음 (a b c, 가 나 다 등)",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            onChanged: (value) {
-              setState(() {
-                _selectedQuestionText = value;
-              });
-              _updateParent();
-            },
+            if (abcOptionExists)
+              Column(
+                children: [
+                  // List of TextFields
+                  ..._abcControllers.map((entry) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: entry,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: '내용',
+                              ),
+                              onChanged: (text) {
+                                _updateAbcOptionList();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  const SizedBox(height: 16),
+                  // Add and Remove buttons
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.greenAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                        ),
+                        onPressed: _addTextField,
+                        child: const Text("+ 보기 추가하기"),
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                        ),
+                        onPressed: _removeLastTextField,
+                        child: const Text("보기 삭제하기"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "문제",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16,),
+        TextField(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
           ),
+          onChanged: (value) {
+            setState(() {
+              _selectedQuestionText = value;
+            });
+            _updateParent();
+          },
         ),
         const SizedBox(height: 16),
         const Text(
@@ -156,7 +263,6 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
                     "보기 ${index + 1}",
                     style: const TextStyle(
@@ -168,7 +274,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                   TextField(
                     controller: _optionControllers[index],
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(), // Add border around TextField
+                      border: const OutlineInputBorder(), // Add border around TextField
                       hintText: "보기 ${index + 1} 적기",
                     ),
                     style: const TextStyle(fontSize: 14),
@@ -187,11 +293,11 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
           ),
         ),
 
-        Text(
+        const Text(
           "정답",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Container(
+        SizedBox(
           width: 100, // Adjust the width to fit the dropdown
           child: DropdownButton<String>(
             value: _selectedAnswer, // Bind to a state variable

@@ -17,11 +17,9 @@ class _CreateQuestionPdfPage extends State<CreateQuestionPdfPage> {
   @override
   Widget build(BuildContext context) {
 
-    double width = MediaQuery.of(context).size.width;
-
-    Widget _getWidgetForOption(String? selectedOption) {
+    Widget getWidgetForOption(String? selectedOption) {
       if (selectedOption == options[0]) {
-        return SuneungQuestionExporter();
+        return const SuneungQuestionExporter();
       } else if (selectedOption == options[1]) {
         return NaesinQuestionExporter();
       }
@@ -62,7 +60,7 @@ class _CreateQuestionPdfPage extends State<CreateQuestionPdfPage> {
             ),
             // Add this Expanded widget to display the selected widget on the right
             Expanded(
-              child: _getWidgetForOption(selectedOption),
+              child: getWidgetForOption(selectedOption),
             ),
           ],
         ),

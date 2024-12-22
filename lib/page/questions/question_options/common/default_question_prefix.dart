@@ -178,9 +178,9 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                     Column(
                       children: [
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           "학년 선택",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         DropdownButton<String>(

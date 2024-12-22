@@ -36,6 +36,23 @@ class _AddQuestionState extends State<AddQuestionPage> {
     });
   }
 
+  // void resetQuestionPages(List<int> removeIndexList) {
+  //
+  //   if (removeIndexList.isEmpty) {
+  //     setState(() {
+  //       _questionPages.clear();
+  //       questionAddResponseCodeList.clear();
+  //     });
+  //   } else {
+  //     for (var element in removeIndexList) {
+  //       setState(() {
+  //         _questionPages.removeAt(element);
+  //         questionAddResponseCodeList.removeAt(element);
+  //       });
+  //     }
+  //   }
+  // }
+
   void _removeQuestionPage(int id) {
     setState(() {
       _questionPages.removeWhere((page) => page.questionId == id);
@@ -87,12 +104,12 @@ class _AddQuestionState extends State<AddQuestionPage> {
                   alignment: Alignment.centerLeft, // Moves the button to the left
                   child:
                   ElevatedButton(
-                    child: const Text("+ 문제 추가"),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.greenAccent, // Red color to indicate a delete action
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                     ),
                     onPressed: _addQuestionPage,
+                    child: const Text("+ 문제 추가"),
                   ),
 
                 ),
@@ -218,6 +235,8 @@ class _AddQuestionState extends State<AddQuestionPage> {
     bool isSuccess = responseCodes.every((code) => code == 200);
 
     if (isSuccess) {
+      // resetQuestionPages([]);
+
       return CupertinoAlertDialog(
         content: Text("저장되었습니다."),
         actions: [
@@ -230,6 +249,16 @@ class _AddQuestionState extends State<AddQuestionPage> {
         ],
       );
     } else {
+
+      List<int> successIndexList = responseCodes
+          .asMap()
+          .entries
+          .where((entry) => entry.value == 200)
+          .map((entry) => entry.key)
+          .toList();
+
+      // resetQuestionPages(successIndexList);
+
       List<int> replaceCandidateIndexList = responseCodes
           .asMap()
           .entries
@@ -271,7 +300,7 @@ class _AddQuestionState extends State<AddQuestionPage> {
                         },
                         onValueChanged: (value) {
                           localSetState(() {
-                            userSelections[questionId] = value!;
+                            userSelections[questionId] = value;
                           });
                         },
                       ),
@@ -327,6 +356,7 @@ class _AddQuestionState extends State<AddQuestionPage> {
                         );
                       },
                     );
+                    // resetQuestionPages([]);
                     return;
                   }
 
@@ -343,6 +373,15 @@ class _AddQuestionState extends State<AddQuestionPage> {
                   // Show the result dialog based on the replace result
                   bool replaceSuccess =
                   replaceRequestResponseList.every((code) => code == 200);
+
+                  List<int> successIndexList = replaceRequestResponseList
+                      .asMap()
+                      .entries
+                      .where((entry) => entry.value == 200)
+                      .map((entry) => entry.key)
+                      .toList();
+
+                  // resetQuestionPages(successIndexList);
 
                   showCupertinoDialog(
                     context: context,
