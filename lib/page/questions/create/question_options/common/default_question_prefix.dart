@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thewell_gpt_admin/page/questions/question_model/question_model.dart';
-
+import '../../question_model/question_model.dart';
 import '../../util/question_types.dart';
+
 
 
 class DefaultQuestionPrefix extends StatefulWidget {

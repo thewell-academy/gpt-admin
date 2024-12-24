@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 'Settings':
         return Setting();
       case 'Questions':
-        return Questions();
+        return const Questions();
       default:
         return const Center(
           child: Text(

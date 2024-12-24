@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thewell_gpt_admin/page/questions/question_model/answer_option_info_model.dart';
-import 'package:thewell_gpt_admin/page/questions/question_model/default_question_info_model.dart';
-import 'package:thewell_gpt_admin/page/questions/question_model/question_model.dart';
-import 'package:thewell_gpt_admin/page/questions/question_router.dart';
-import 'package:thewell_gpt_admin/page/questions/util/question_types.dart';
-import 'package:thewell_gpt_admin/page/questions/util/save_questions.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_router.dart';
+import 'package:thewell_gpt_admin/page/questions/create/util/question_types.dart';
+import 'package:thewell_gpt_admin/page/questions/create/util/save_questions.dart';
 
-class AddQuestionPage extends StatefulWidget {
+import 'question_model/default_question_info_model.dart';
+import 'question_model/question_model.dart';
+
+class CreateQuestionPage extends StatefulWidget {
+  const CreateQuestionPage({super.key});
+
   @override
-  State<StatefulWidget> createState() => _AddQuestionState();
+  State<StatefulWidget> createState() => _CreateQuestionState();
 }
 
-class _AddQuestionState extends State<AddQuestionPage> {
+class _CreateQuestionState extends State<CreateQuestionPage> {
   String? _selectedSubject; // State variable for selected subject
   final List<QuestionPageState> _questionPages = []; // List of question page states
 
@@ -35,23 +37,6 @@ class _AddQuestionState extends State<AddQuestionPage> {
       }
     });
   }
-
-  // void resetQuestionPages(List<int> removeIndexList) {
-  //
-  //   if (removeIndexList.isEmpty) {
-  //     setState(() {
-  //       _questionPages.clear();
-  //       questionAddResponseCodeList.clear();
-  //     });
-  //   } else {
-  //     for (var element in removeIndexList) {
-  //       setState(() {
-  //         _questionPages.removeAt(element);
-  //         questionAddResponseCodeList.removeAt(element);
-  //       });
-  //     }
-  //   }
-  // }
 
   void _removeQuestionPage(int id) {
     setState(() {
@@ -175,12 +160,12 @@ class _AddQuestionState extends State<AddQuestionPage> {
     // 문제 데이터가 정확히 입력된 경우 서버에 전달 후 결과 받기
     // 중복되는 문제 있으면 어떻게 할건지 물어보기
     return CupertinoAlertDialog(
-      title: Text("문제 저장하기"),
+      title: const Text("문제 저장하기"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: const [
            Text("문제를 저장하시겠습니까?"),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
         ],
       ),
       actions: [
@@ -294,7 +279,7 @@ class _AddQuestionState extends State<AddQuestionPage> {
                       SizedBox(height: 8),
                       CupertinoSegmentedControl<String>(
                         groupValue: userSelections[questionId],
-                        children: {
+                        children: const {
                           "덮어쓰기": Text("덮어쓰기"),
                           "기존 문제 유지": Text("기존 문제 유지"),
                         },
