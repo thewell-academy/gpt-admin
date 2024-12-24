@@ -6,66 +6,133 @@ class ExportOptionSelector extends StatefulWidget {
 }
 
 class _ExportOptionSelectorState extends State<ExportOptionSelector> {
-  String _selectedExam = "수능"; // Initialize with a default value
-  final List<int> years = List.generate(11, (index) => 2015 + index); // Generate years from 2015 to 2025
-  final Set<int> selectedYears = {}; // Store selected years
-  final List<String> months = List.generate(12, (index) => "${index + 1}월"); // Generate months as strings
-  final Set<String> selectedMonths = {}; // Store selected months
+  String? _selectedSubject;
+  String? _selectedExamType;
+  Map<String, dynamic>? subjectDetails;
+  List<Map<String, dynamic>> dynamicSelections = [];
+  bool isLoading = false;
+
+  final List<int> years = List.generate(11, (index) => 2015 + index).reversed.toList();
+  final Set<int> selectedYears = {};
+  final List<String> months = List.generate(12, (index) => "${index + 1}월");
+  final Set<String> selectedMonths = {};
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Align everything to the left
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Subject and Exam Type Selection
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
-              flex: 1,
+              flex: 2,
               child: DropdownButton<String>(
-                value: _selectedExam,
-                items: ["수능", "모의고사"]
-                    .map((e) => DropdownMenuItem<String>(
-                  value: e,
-                  child: Text(e),
-                ))
-                    .toList(),
-                onChanged: (value) {
+                value: _selectedSubject,
+                hint: Text("Select Subject"),
+                items: ["수학", "영어", "과학"].map((subject) {
+                  return DropdownMenuItem<String>(
+                    value: subject,
+                    child: Text(subject),
+                  );
+                }).toList(),
+                onChanged: (subject) async {
                   setState(() {
-                    _selectedExam = value!;
+                    _selectedSubject = subject;
+                    _selectedExamType = null;
+                    isLoading = true;
+                    subjectDetails = null;
+                    dynamicSelections.clear();
+                  });
+
+                  final details = await _fetchSubjectDetails(subject!);
+
+                  setState(() {
+                    subjectDetails = details;
+                    isLoading = false;
                   });
                 },
               ),
             ),
             const SizedBox(width: 16),
-            Flexible(
-              flex: 2, // Adjust flex to control widths
-              child: _buildMultiSelectDropdown<int>(
-                title: "연도",
-                items: ["Select All", ...years],
-                selectedItems: selectedYears,
-                onSelectionChanged: () => setState(() {}),
-                displaySelected: selectedYears.isEmpty
-                    ? "연도 선택"
-                    : selectedYears.join(", "),
-              ),
-            ),
-            const SizedBox(width: 16),
-            if (_selectedExam == "모의고사")
+            if (_selectedSubject != null)
               Flexible(
-                flex: 2, // Adjust flex to control widths
-                child: _buildMultiSelectDropdown<String>(
-                  title: "월",
-                  items: ["Select All", ...months],
-                  selectedItems: selectedMonths,
-                  onSelectionChanged: () => setState(() {}),
-                  displaySelected: selectedMonths.isEmpty
-                      ? "월 선택"
-                      : selectedMonths.join(", "),
+                flex: 2,
+                child: DropdownButton<String>(
+                  value: _selectedExamType,
+                  hint: Text("Select Exam Type"),
+                  items: ["수능", "모의고사"].map((examType) {
+                    return DropdownMenuItem<String>(
+                      value: examType,
+                      child: Text(examType),
+                    );
+                  }).toList(),
+                  onChanged: (examType) {
+                    setState(() {
+                      _selectedExamType = examType;
+                    });
+                  },
                 ),
               ),
+            if (isLoading) ...[
+              SizedBox(width: 10),
+              CircularProgressIndicator(),
+            ]
           ],
-        )
+        ),
+        const SizedBox(height: 16),
+
+        // Year and Month Selection
+        if (_selectedExamType != null)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                flex: 2,
+                child: _buildMultiSelectDropdown<int>(
+                  title: "연도",
+                  items: ["전체 선택", ...years],
+                  selectedItems: selectedYears,
+                  onSelectionChanged: () => setState(() {}),
+                  displaySelected: selectedYears.isEmpty
+                      ? "연도 선택"
+                      : selectedYears.join(", "),
+                ),
+              ),
+              const SizedBox(width: 16),
+              if (_selectedExamType == "모의고사")
+                Flexible(
+                  flex: 2,
+                  child: _buildMultiSelectDropdown<String>(
+                    title: "월",
+                    items: ["전체 선택", ...months],
+                    selectedItems: selectedMonths,
+                    onSelectionChanged: () => setState(() {}),
+                    displaySelected: selectedMonths.isEmpty
+                        ? "월 선택"
+                        : selectedMonths.join(", "),
+                  ),
+                ),
+            ],
+          ),
+        const SizedBox(height: 20),
+
+        // Dynamic Selection for Subject Details
+        if (subjectDetails != null && _selectedExamType != null)
+          _buildDynamicSelection(subjectDetails!),
+
+        // 문제 출력하기 Button
+        const SizedBox(height: 20),
+        if (_selectedSubject != null)
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                // Add the action for the button
+              },
+              child: const Text("문제 출력하기"),
+            ),
+          ),
       ],
     );
   }
@@ -77,76 +144,191 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
     required VoidCallback onSelectionChanged,
     required String displaySelected,
   }) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<dynamic>(
-        isExpanded: true, // Ensure dropdown expands to fit text
-        hint: Text(
-          displaySelected,
-          overflow: TextOverflow.ellipsis, // Handle text overflow gracefully
-        ),
-        items: items.map((item) {
-          return DropdownMenuItem<dynamic>(
-            value: item,
-            child: StatefulBuilder(
-              builder: (context, setState) {
-                final isSelectAll = item == "Select All";
-                return Row(
+    return StatefulBuilder(
+      builder: (context, setStateDropdown) {
+        return DropdownButtonHideUnderline(
+          child: DropdownButton<dynamic>(
+            isExpanded: true,
+            hint: Text(displaySelected),
+            items: items.map((item) {
+              final isSelectAll = item == "전체 선택";
+              return DropdownMenuItem<dynamic>(
+                value: item,
+                child: Row(
                   children: [
-                    Checkbox(
-                      value: isSelectAll
-                          ? selectedItems.length == items.length - 1 // All items selected
-                          : selectedItems.contains(item),
-                      onChanged: (isChecked) {
-                        setState(() {
-                          if (isSelectAll) {
-                            // Toggle Select All
-                            if (selectedItems.length == items.length - 1) {
-                              selectedItems.clear(); // Deselect all
-                            } else {
-                              selectedItems.addAll(
-                                  items.where((i) => i != "Select All").cast<T>()); // Select all
-                            }
-                          } else {
-                            // Toggle individual item
-                            if (isChecked == true) {
-                              selectedItems.add(item as T);
-                            } else {
-                              selectedItems.remove(item);
-                            }
-                          }
-                        });
-                        onSelectionChanged(); // Notify parent to update text
+                    StatefulBuilder(
+                      builder: (context, setStateCheckbox) {
+                        return Checkbox(
+                          value: isSelectAll
+                              ? selectedItems.length == items.length - 1
+                              : selectedItems.contains(item),
+                          onChanged: (isChecked) {
+                            setState(() {
+                              if (isSelectAll) {
+                                if (selectedItems.length == items.length - 1) {
+                                  selectedItems.clear();
+                                } else {
+                                  selectedItems.addAll(items.where((i) => i != "전체 선택").cast<T>());
+                                }
+                              } else {
+                                if (isChecked == true) {
+                                  selectedItems.add(item as T);
+                                } else {
+                                  selectedItems.remove(item);
+                                }
+                              }
+                            });
+                            setStateDropdown(() {}); // Update dropdown state
+                            setStateCheckbox(() {}); // Update checkbox state
+                            onSelectionChanged();
+                          },
+                        );
                       },
                     ),
                     Flexible(
-                      child: Text(
-                        _formatText(item.toString(), 24), // Break text into 24-character lines
-                        style: const TextStyle(fontSize: 14),
-                        maxLines: null, // Allow multiple lines
-                        softWrap: true, // Enable text wrapping
-                      ),
+                      child: Text(item.toString()),
                     ),
                   ],
-                );
-              },
-            ),
-          );
-        }).toList(),
-        onChanged: (_) {}, // Required but not used
-      ),
+                ),
+              );
+            }).toList(),
+            onChanged: (_) {},
+          ),
+        );
+      },
     );
   }
 
-  /// Helper function to split text into lines of [maxChars] characters
-  String _formatText(String text, int maxChars) {
-    final buffer = StringBuffer();
-    for (int i = 0; i < text.length; i += maxChars) {
-      if (i + maxChars < text.length) {
-        buffer.write('${text.substring(i, i + maxChars)}\n');
+  Widget _buildDynamicSelection(Map<String, dynamic> data) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: List.generate(dynamicSelections.length + 1, (level) {
+        Map<String, dynamic>? currentLevel = data;
+
+        for (int i = 0; i < level && i < dynamicSelections.length; i++) {
+          final selectedKeys = dynamicSelections[i]["selected"] as Set<String>;
+          if (currentLevel != null) {
+            currentLevel = selectedKeys.fold<Map<String, dynamic>>({}, (acc, key) {
+              if (currentLevel![key] is Map<String, dynamic>) {
+                acc.addAll(currentLevel[key]);
+              }
+              return acc;
+            });
+          }
+        }
+
+        final options = currentLevel != null
+            ? ["전체 선택", ...currentLevel.keys.toList()]
+            : [];
+        if (options.length == 1 && options.contains("전체 선택")) return const SizedBox.shrink();
+
+        final selectedItems = level < dynamicSelections.length
+            ? dynamicSelections[level]["selected"] as Set<String>
+            : <String>{};
+
+        final displaySelected = selectedItems.isEmpty
+            ? "Level ${level + 1} 선택"
+            : selectedItems.join(", ");
+
+        return StatefulBuilder(
+          builder: (context, setStateDropdown) {
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<dynamic>(
+                isExpanded: true,
+                hint: Text(displaySelected),
+                items: options.map((item) {
+                  final isSelectAll = item == "전체 선택";
+                  return DropdownMenuItem<dynamic>(
+                    value: item,
+                    child: StatefulBuilder(
+                      builder: (context, setStateCheckbox) {
+                        return Row(
+                          children: [
+                            Checkbox(
+                              value: isSelectAll
+                                  ? selectedItems.length == options.length - 1
+                                  : selectedItems.contains(item),
+                              onChanged: (isChecked) {
+                                setState(() {
+                                  if (isSelectAll) {
+                                    if (selectedItems.length == options.length - 1) {
+                                      selectedItems.clear();
+                                    } else {
+                                      selectedItems.addAll(options.where((i) => i != "전체 선택").cast<String>());
+                                    }
+                                  } else {
+                                    if (isChecked == true) {
+                                      selectedItems.add(item);
+                                    } else {
+                                      selectedItems.remove(item);
+                                    }
+                                  }
+                                });
+                                setStateDropdown(() {});
+                                setStateCheckbox(() {});
+                                _updateDynamicSelections(level, options, selectedItems);
+                              },
+                            ),
+                            Flexible(
+                              child: Text(item.toString()),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                }).toList(),
+                onChanged: (_) {},
+              ),
+            );
+          },
+        );
+      }),
+    );
+  }
+
+  void _updateDynamicSelections(int level, List<dynamic> options, Set<String> selectedItems) {
+    setState(() {
+      if (level < dynamicSelections.length) {
+        dynamicSelections[level]["selected"] = selectedItems;
+        dynamicSelections = dynamicSelections.sublist(0, level + 1);
       } else {
-        buffer.write(text.substring(i));
+        dynamicSelections.add({
+          "options": options,
+          "selected": selectedItems,
+        });
       }
-    }
-    return buffer.toString();
+    });
+  }
+
+  Future<Map<String, dynamic>> _fetchSubjectDetails(String subject) async {
+    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+    return {
+      "1학년": {
+        "고등수학(상)": {
+          "다항식": [],
+          "방정식과 부등식": [],
+          "도형의 방정식": []
+        },
+        "고등수학(하)": {
+          "집합과 명제": [],
+          "함수와 그래프": [],
+          "경우의 수": []
+        }
+      },
+      "2학년": {
+        "수학1": {
+          "지수함수와 로그함수": [],
+          "삼각함수": [],
+          "수열": []
+        },
+        "수학2": {
+          "함수의 극한과 연속": [],
+          "미분": [],
+          "적분": []
+        }
+      }
+    };
   }
 }

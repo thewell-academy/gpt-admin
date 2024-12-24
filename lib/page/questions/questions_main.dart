@@ -25,7 +25,7 @@ class _QuestionsState extends State<Questions> {
             bottom: const TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
-                Tab(text: "문제 PDF 만들기"),
+                Tab(text: "문제 만들기"),
                 Tab(text: "문제 데이터 추가하기"),
               ],
               isScrollable: false,

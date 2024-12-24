@@ -19,11 +19,11 @@ class SuneungQuestionExporterState extends State<SuneungQuestionExporter> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "수능/모의고사 기출문제 PDF 만들기",
+          const Text(
+            "수능/모의고사 기출문제 만들기",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: ExportOptionSelector(),
           ),

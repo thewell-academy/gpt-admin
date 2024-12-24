@@ -13,9 +13,9 @@ class NaesinQuestionExporterState extends State<NaesinQuestionExporter> {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text(
-                "내신 기출문제 PDF 만들기",
+                "내신 기출문제 만들기",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold
