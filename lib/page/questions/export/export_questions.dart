@@ -23,7 +23,7 @@ class _ExportQuestionPage extends State<ExportQuestionPage> {
       if (selectedOption == options[0]) {
         return const SuneungQuestionExporter();
       } else if (selectedOption == options[1]) {
-        return NaesinQuestionExporter();
+        return const NaesinQuestionExporter();
       }
       else {
         return Container(); // Default empty widget
@@ -31,7 +31,7 @@ class _ExportQuestionPage extends State<ExportQuestionPage> {
     }
 
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 1300,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -67,7 +67,7 @@ class _ExportQuestionPage extends State<ExportQuestionPage> {
           ],
         ),
       ),
-    ) ;
+    );
 
   }
 

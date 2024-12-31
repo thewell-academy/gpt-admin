@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 
-class ExportOptionSelector extends StatefulWidget {
+import '../../../../util/util.dart';
+
+class ExportQuestionOptionSelector extends StatefulWidget {
+  const ExportQuestionOptionSelector({super.key});
+
   @override
-  State<StatefulWidget> createState() => _ExportOptionSelectorState();
+  State<StatefulWidget> createState() => _ExportQuestionOptionSelectorState();
 }
 
-class _ExportOptionSelectorState extends State<ExportOptionSelector> {
+class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelector> {
   String? _selectedSubject;
   String? _selectedExamType;
   Map<String, dynamic>? subjectDetails;
   List<Map<String, dynamic>> dynamicSelections = [];
   bool isLoading = false;
 
-  final List<int> years = List.generate(11, (index) => 2015 + index).reversed.toList();
+  final List<int> years = List
+      .generate(11, (index) => 2015 + index)
+      .reversed
+      .toList();
   final Set<int> selectedYears = {};
   final List<String> months = List.generate(12, (index) => "${index + 1}월");
   final Set<String> selectedMonths = {};
@@ -22,14 +29,13 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Subject and Exam Type Selection
         Row(
           children: [
             Flexible(
               flex: 2,
               child: DropdownButton<String>(
                 value: _selectedSubject,
-                hint: Text("Select Subject"),
+                hint: const Text("과목 선택하기"),
                 items: ["수학", "영어", "과학"].map((subject) {
                   return DropdownMenuItem<String>(
                     value: subject,
@@ -45,7 +51,7 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
                     dynamicSelections.clear();
                   });
 
-                  final details = await _fetchSubjectDetails(subject!);
+                  final details = await fetchSubjectDetails(subject!);
 
                   setState(() {
                     subjectDetails = details;
@@ -117,11 +123,9 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
           ),
         const SizedBox(height: 20),
 
-        // Dynamic Selection for Subject Details
         if (subjectDetails != null && _selectedExamType != null)
           _buildDynamicSelection(subjectDetails!),
 
-        // 문제 출력하기 Button
         const SizedBox(height: 20),
         if (_selectedSubject != null)
           SizedBox(
@@ -168,7 +172,9 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
                                 if (selectedItems.length == items.length - 1) {
                                   selectedItems.clear();
                                 } else {
-                                  selectedItems.addAll(items.where((i) => i != "전체 선택").cast<T>());
+                                  selectedItems.addAll(
+                                      items.where((i) => i != "전체 선택").cast<
+                                          T>());
                                 }
                               } else {
                                 if (isChecked == true) {
@@ -209,19 +215,21 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
         for (int i = 0; i < level && i < dynamicSelections.length; i++) {
           final selectedKeys = dynamicSelections[i]["selected"] as Set<String>;
           if (currentLevel != null) {
-            currentLevel = selectedKeys.fold<Map<String, dynamic>>({}, (acc, key) {
-              if (currentLevel![key] is Map<String, dynamic>) {
-                acc.addAll(currentLevel[key]);
-              }
-              return acc;
-            });
+            currentLevel =
+                selectedKeys.fold<Map<String, dynamic>>({}, (acc, key) {
+                  if (currentLevel![key] is Map<String, dynamic>) {
+                    acc.addAll(currentLevel[key]);
+                  }
+                  return acc;
+                });
           }
         }
 
         final options = currentLevel != null
             ? ["전체 선택", ...currentLevel.keys.toList()]
             : [];
-        if (options.length == 1 && options.contains("전체 선택")) return const SizedBox.shrink();
+        if (options.length == 1 && options.contains("전체 선택"))
+          return const SizedBox.shrink();
 
         final selectedItems = level < dynamicSelections.length
             ? dynamicSelections[level]["selected"] as Set<String>
@@ -252,10 +260,14 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
                               onChanged: (isChecked) {
                                 setState(() {
                                   if (isSelectAll) {
-                                    if (selectedItems.length == options.length - 1) {
+                                    if (selectedItems.length ==
+                                        options.length - 1) {
                                       selectedItems.clear();
                                     } else {
-                                      selectedItems.addAll(options.where((i) => i != "전체 선택").cast<String>());
+                                      selectedItems.addAll(
+                                          options.where((i) => i != "전체 선택")
+                                              .cast<
+                                              String>());
                                     }
                                   } else {
                                     if (isChecked == true) {
@@ -267,7 +279,8 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
                                 });
                                 setStateDropdown(() {});
                                 setStateCheckbox(() {});
-                                _updateDynamicSelections(level, options, selectedItems);
+                                _updateDynamicSelections(
+                                    level, options, selectedItems);
                               },
                             ),
                             Flexible(
@@ -288,7 +301,8 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
     );
   }
 
-  void _updateDynamicSelections(int level, List<dynamic> options, Set<String> selectedItems) {
+  void _updateDynamicSelections(int level, List<dynamic> options,
+      Set<String> selectedItems) {
     setState(() {
       if (level < dynamicSelections.length) {
         dynamicSelections[level]["selected"] = selectedItems;
@@ -300,35 +314,5 @@ class _ExportOptionSelectorState extends State<ExportOptionSelector> {
         });
       }
     });
-  }
-
-  Future<Map<String, dynamic>> _fetchSubjectDetails(String subject) async {
-    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    return {
-      "1학년": {
-        "고등수학(상)": {
-          "다항식": [],
-          "방정식과 부등식": [],
-          "도형의 방정식": []
-        },
-        "고등수학(하)": {
-          "집합과 명제": [],
-          "함수와 그래프": [],
-          "경우의 수": []
-        }
-      },
-      "2학년": {
-        "수학1": {
-          "지수함수와 로그함수": [],
-          "삼각함수": [],
-          "수열": []
-        },
-        "수학2": {
-          "함수의 극한과 연속": [],
-          "미분": [],
-          "적분": []
-        }
-      }
-    };
   }
 }

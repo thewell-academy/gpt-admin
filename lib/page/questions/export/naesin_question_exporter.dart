@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class NaesinQuestionExporter extends StatefulWidget {
+  const NaesinQuestionExporter({super.key});
+
   @override
   State<StatefulWidget> createState() => NaesinQuestionExporterState();
 }
@@ -9,7 +11,7 @@ class NaesinQuestionExporterState extends State<NaesinQuestionExporter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 20, 10, 50),
+      margin: const EdgeInsets.fromLTRB(10, 20, 10, 50),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

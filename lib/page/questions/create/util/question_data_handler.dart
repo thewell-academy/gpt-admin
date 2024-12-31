@@ -6,13 +6,6 @@ import '../question_model/question_model.dart';
 
 class QuestionDataHandler {
 
-  static void updateQuestionType(
-      QuestionModel questionModel,
-      String questionType
-      ) {
-    questionModel.type = questionType;
-  }
-
   // 유형, 배점, 시험 연월, 문제 텍스트 등
   static void updateDefaultQuestionInfo(
       QuestionModel questionModel,

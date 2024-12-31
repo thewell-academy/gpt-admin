@@ -5,6 +5,7 @@ import 'package:thewell_gpt_admin/page/questions/create/question_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../util/server_config.dart';
+import '../question_model/question_router_state.dart';
 
 String serverUrl = gptServerUrl;
 
@@ -21,29 +22,24 @@ Map<String, dynamic> parsedResponse(String responseBody) {
 }
 
 
-Future<List<int?>> getQuestionSaveResult(List<QuestionPageState> questionStateList, bool replace) async {
+Future<int?> getQuestionSaveResult(QuestionRouterState questionRouterState, bool replace) async {
 
-  final List<int?> resultList = [];
+  try {
 
-  for (var state in questionStateList) {
-    try {
-
-      if (state.questionModel.defaultQuestionInfo.selectedFileBytes != null) {
-        resultList.add(await sendQuestionWithFile(state, replace));
-      } else {
-        resultList.add(await sendQuestionWithoutFile(state, replace));
-      }
-
-    } catch (e) {
-      print("Router Exception for question ID: ${state.questionId}");
-      print("Error: $e");
+    if (questionRouterState.questionModel.defaultQuestionInfo.selectedFileBytes != null) {
+      return await sendQuestionWithFile(questionRouterState, replace);
+    } else {
+      return await sendQuestionWithoutFile(questionRouterState, replace);
     }
-  }
 
-  return resultList;
+  } catch (e) {
+    print("Router Exception for question ID: ${questionRouterState.questionId}");
+    print("Error: $e");
+  }
+  return null;
 }
 
-Future<int?> sendQuestionWithFile(QuestionPageState questionPageState, bool replace) async {
+Future<int?> sendQuestionWithFile(QuestionRouterState questionPageState, bool replace) async {
   final url = "$serverUrl/question-bank/add-all/file";
   final uri = Uri.parse(url).replace(queryParameters: {
     "replace": replace.toString(),
@@ -75,7 +71,7 @@ Future<int?> sendQuestionWithFile(QuestionPageState questionPageState, bool repl
 }
 
 
-Future<int?> sendQuestionWithoutFile(QuestionPageState questionPageState, bool replace) async {
+Future<int?> sendQuestionWithoutFile(QuestionRouterState questionPageState, bool replace) async {
   final url = "$serverUrl/question-bank/add-all";
   final uri = Uri.parse(url).replace(queryParameters: {
     "replace": replace.toString(),

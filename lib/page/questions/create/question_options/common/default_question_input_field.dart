@@ -264,7 +264,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "보기 ${index + 1}",
+                    "정답 ${index + 1}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

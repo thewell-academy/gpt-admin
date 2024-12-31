@@ -110,37 +110,6 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "시험 선택",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16), // Add spacing after Markdown input
-        // First set of radio buttons for exam type
-        Wrap(
-          spacing: 16,
-          runSpacing: 8,
-          children: examList.keys.map((exam) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Radio<String>(
-                  value: exam,
-                  groupValue: _selectedExam,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedExam = value;
-                      _selectedYear = null; // Reset the year selection
-                    });
-                    _updateParent();
-                  },
-                ),
-                Text(exam),
-              ],
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 16), // Add spacing after Markdown input
-        // Second set of radio buttons for years or sub-items
         if (_selectedExam != null && examList[_selectedExam!] != null)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
