@@ -7,12 +7,12 @@ import '../common/default_answer_postfix.dart';
 import '../common/default_question_input_field.dart';
 import '../common/default_question_prefix.dart';
 
-class EnglishQuestionType1 extends StatefulWidget {
+class ScienceQuestionType1 extends StatefulWidget {
 
   final QuestionModel questionModel;
   final VoidCallback onDelete;
 
-  const EnglishQuestionType1({
+  const ScienceQuestionType1({
     required Key key,
     required this.questionModel,
     required this.onDelete,
@@ -20,17 +20,17 @@ class EnglishQuestionType1 extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EnglishQuestionType1State();
+  State<StatefulWidget> createState() => _ScienceQuestionType1State();
 }
 
-class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
-  String? questionText; // Holds the text input by the user
+class _ScienceQuestionType1State extends State<ScienceQuestionType1> {
+  String? questionText;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0), // Add padding around the content
-      child: SingleChildScrollView( // Make the content scrollable
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,15 +45,9 @@ class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),
 
-            MarkdownInputAndRender(
-              title: '지문 원본 (정답이 추가된, 완벽한 지문을 적어주세요)',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
-            ),
-
             DefaultQuestionInputField(
-                questionModel: widget.questionModel,
-                onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionModel: widget.questionModel,
+              onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
             ),
 
             DefaultQuestionPostfix(

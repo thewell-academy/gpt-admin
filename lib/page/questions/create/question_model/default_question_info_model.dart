@@ -29,14 +29,8 @@ class DefaultQuestionInfoModel {
 
   bool isValid() {
 
-    print("$exam $examYear $examMonth");
-
     bool valid1 = (exam == "수능");
     bool valid2 = (exam != "수능" && examMonth > 0);
-    print("default info ---");
-    print(valid1);
-    print(valid2);
-    print("---");
 
     if (exam.isNotEmpty && examYear > 0
         && (valid1 || valid2)) {

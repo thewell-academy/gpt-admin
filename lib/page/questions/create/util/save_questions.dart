@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:thewell_gpt_admin/page/questions/create/question_router.dart';
 
@@ -40,7 +41,7 @@ Future<int?> getQuestionSaveResult(QuestionRouterState questionRouterState, bool
 }
 
 Future<int?> sendQuestionWithFile(QuestionRouterState questionPageState, bool replace) async {
-  final url = "$serverUrl/question-bank/add-all/file";
+  final url = "$serverUrl/question-bank/add/file";
   final uri = Uri.parse(url).replace(queryParameters: {
     "replace": replace.toString(),
   });
@@ -72,7 +73,7 @@ Future<int?> sendQuestionWithFile(QuestionRouterState questionPageState, bool re
 
 
 Future<int?> sendQuestionWithoutFile(QuestionRouterState questionPageState, bool replace) async {
-  final url = "$serverUrl/question-bank/add-all";
+  final url = "$serverUrl/question-bank/add";
   final uri = Uri.parse(url).replace(queryParameters: {
     "replace": replace.toString(),
   });
@@ -88,5 +89,35 @@ Future<int?> sendQuestionWithoutFile(QuestionRouterState questionPageState, bool
   }
   return null;
 
+}
+
+Future<File?> getExportedQuestionBankFile(
+    String subject,
+    String exam,
+    List<String> selections,
+    List<int> years,
+    List<int> months,
+    List<String> grades
+    ) async {
+
+  final url = "$serverUrl/question-bank/export";
+  final uri = Uri.parse(url).replace(queryParameters: {
+    "subject": subject,
+    "exam": exam,
+    "selections": selections.join(","),
+    "years": years.map((e) => e.toString()).join(","),
+    "months": months.map((e) => e.toString()).join(","),
+    "grades": grades.join(",")
+  });
+  var request = http.Request('GET', uri);
+
+  try {
+    var response =  await request.send();
+    print(response.statusCode);
+    return null;
+  } catch (e) {
+    print("Error: $e");
+  }
+  return null;
 }
 

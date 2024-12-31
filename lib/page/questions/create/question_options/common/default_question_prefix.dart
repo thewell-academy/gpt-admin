@@ -10,10 +10,9 @@ import '../../util/question_types.dart';
 
 class DefaultQuestionPrefix extends StatefulWidget {
   final QuestionModel questionModel;
-  // util/question_data_handler.dart -> updateDefaultQuestionInfo()
   final Function(QuestionModel, String, String, String, String, String) onUpdate;
 
-  DefaultQuestionPrefix({
+  const DefaultQuestionPrefix({
     Key? key,
     required this.questionModel,
     required this.onUpdate,
@@ -166,18 +165,17 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                               _selectedGrade = value!;
                             });
                             _updateParent();
-                            // Handle month selection logic if needed
                           },
                         ),
                       ],
                     ),
-                    SizedBox(width: 20,),
+                    const SizedBox(width: 20,),
                     Column(
                       children: [
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           "월 선택",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         DropdownButton<String>(
@@ -206,9 +204,9 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "(Optional) 사진",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Container(
@@ -217,7 +215,9 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                 children: [
                   ElevatedButton(
                     onPressed: _fileSelectRouter,
-                    child: (_selectedFileBytes == null && _selectedFilePath == null) ? const Text("사진 선택") : const Text("사진 삭제"),
+                    child: (_selectedFileBytes == null && _selectedFilePath == null)
+                        ? const Text("사진 선택")
+                        : const Text("사진 삭제"),
                   ),
                   if (_selectedFileName != null)
                     Padding(
@@ -230,7 +230,7 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         )
       ],

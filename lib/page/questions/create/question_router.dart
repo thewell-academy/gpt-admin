@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thewell_gpt_admin/page/questions/create/question_model/question_router_state.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_options/math/math_question_option1.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_options/science/science_question_option1.dart';
 import 'package:thewell_gpt_admin/page/questions/create/util/question_data_handler.dart';
 
 import 'question_model/question_model.dart';
@@ -98,6 +100,22 @@ class _QuestionPageStateWidget extends State<QuestionRouter> {
     }
   }
 
+  Widget _buildWidgetForMathQuestionType(String selectedType) {
+    return MathQuestionType1(
+      key: ValueKey(widget.pageState),
+      questionModel: _questionModel,
+      onDelete: () => widget.onDelete(),
+    );
+  }
+
+  Widget _buildWidgetForScienceQuestionType(String selectedType) {
+    return ScienceQuestionType1(
+      key: ValueKey(widget.pageState),
+      questionModel: _questionModel,
+      onDelete: () => widget.onDelete(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_selectedQuestionType == null) {
@@ -106,6 +124,10 @@ class _QuestionPageStateWidget extends State<QuestionRouter> {
     switch (_selectedSubject) {
       case "영어":
         return _buildWidgetForEnglishQuestionType(_selectedQuestionType!);
+      case "수학":
+        return _buildWidgetForMathQuestionType(_selectedQuestionType!);
+      case "과학":
+        return _buildWidgetForScienceQuestionType(_selectedQuestionType!);
       default:
         return Text("Selected Type: $_selectedQuestionType");
     }

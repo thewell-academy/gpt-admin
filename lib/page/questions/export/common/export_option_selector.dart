@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../util/util.dart';
+import '../../create/util/save_questions.dart';
 
 class ExportQuestionOptionSelector extends StatefulWidget {
   const ExportQuestionOptionSelector({super.key});
@@ -21,8 +22,10 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
       .reversed
       .toList();
   final Set<int> selectedYears = {};
-  final List<String> months = List.generate(12, (index) => "${index + 1}월");
-  final Set<String> selectedMonths = {};
+  final List<int> months = List.generate(12, (index) => index + 1);
+  final Set<int> selectedMonths = {};
+  final List<String> grades = List.generate(3, (index) => "고${index+1}");
+  final Set<String> selectedGrades = {};
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
               flex: 2,
               child: DropdownButton<String>(
                 value: _selectedSubject,
-                hint: const Text("과목 선택하기"),
+                hint: const Text("과목 선택"),
                 items: ["수학", "영어", "과학"].map((subject) {
                   return DropdownMenuItem<String>(
                     value: subject,
@@ -66,7 +69,7 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
                 flex: 2,
                 child: DropdownButton<String>(
                   value: _selectedExamType,
-                  hint: Text("Select Exam Type"),
+                  hint: const Text("시험 유형 선택"),
                   items: ["수능", "모의고사"].map((examType) {
                     return DropdownMenuItem<String>(
                       value: examType,
@@ -81,8 +84,8 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
                 ),
               ),
             if (isLoading) ...[
-              SizedBox(width: 10),
-              CircularProgressIndicator(),
+              const SizedBox(width: 10),
+              const CircularProgressIndicator(),
             ]
           ],
         ),
@@ -109,7 +112,7 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
               if (_selectedExamType == "모의고사")
                 Flexible(
                   flex: 2,
-                  child: _buildMultiSelectDropdown<String>(
+                  child: _buildMultiSelectDropdown<int>(
                     title: "월",
                     items: ["전체 선택", ...months],
                     selectedItems: selectedMonths,
@@ -117,6 +120,20 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
                     displaySelected: selectedMonths.isEmpty
                         ? "월 선택"
                         : selectedMonths.join(", "),
+                  ),
+                ),
+              const SizedBox(width: 16),
+              if (_selectedExamType == "모의고사")
+                Flexible(
+                  flex: 2,
+                  child: _buildMultiSelectDropdown<String>(
+                    title: "학년",
+                    items: ["전체 선택", ...grades],
+                    selectedItems: selectedGrades,
+                    onSelectionChanged: () => setState(() {}),
+                    displaySelected: selectedGrades.isEmpty
+                        ? "학년 선택"
+                        : selectedGrades.join(", "),
                   ),
                 ),
             ],
@@ -131,8 +148,35 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                // Add the action for the button
+              onPressed: () async {
+                List<Set<String>> sets = dynamicSelections.map((e) {
+                  return e['selected'] as Set<String>;
+                }).toList();
+
+                List<String> generateCombinations(List<Set<String>> sets, [int index = 0, String prefix = ""]) {
+                  // Base case: if we are at the last set, return the current prefix combined with each element of the last set
+                  if (index >= sets.length) {
+                    return [prefix];
+                  }
+
+                  // Recursive case: combine the current prefix with each element of the current set
+                  List<String> combinations = [];
+                  for (String item in sets[index]) {
+                    String newPrefix = prefix.isEmpty ? item : "$prefix > $item";
+                    combinations.addAll(generateCombinations(sets, index + 1, newPrefix));
+                  }
+
+                  return combinations;
+                }
+
+                await getExportedQuestionBankFile(
+                  _selectedSubject?? "",
+                  _selectedExamType?? "",
+                  generateCombinations(sets),
+                  selectedYears.toList(),
+                  selectedMonths.toList(),
+                    selectedGrades.toList()
+                );
               },
               child: const Text("문제 출력하기"),
             ),
@@ -184,8 +228,8 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
                                 }
                               }
                             });
-                            setStateDropdown(() {}); // Update dropdown state
-                            setStateCheckbox(() {}); // Update checkbox state
+                            setStateDropdown(() {});
+                            setStateCheckbox(() {});
                             onSelectionChanged();
                           },
                         );
@@ -228,15 +272,16 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
         final options = currentLevel != null
             ? ["전체 선택", ...currentLevel.keys.toList()]
             : [];
-        if (options.length == 1 && options.contains("전체 선택"))
+        if (options.length == 1 && options.contains("전체 선택")) {
           return const SizedBox.shrink();
+        }
 
         final selectedItems = level < dynamicSelections.length
             ? dynamicSelections[level]["selected"] as Set<String>
             : <String>{};
 
         final displaySelected = selectedItems.isEmpty
-            ? "Level ${level + 1} 선택"
+            ? "유형 ${level + 1} 선택"
             : selectedItems.join(", ");
 
         return StatefulBuilder(

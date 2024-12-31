@@ -32,11 +32,6 @@ class QuestionModel {
 
   bool isValid() {
 
-    print(subject.isNotEmpty);
-    print(defaultQuestionInfo.isValid());
-    print(questionContentTextMap.isNotEmpty);
-    print(!answerOptionInfoList.map((e) => e.isValid()).contains(false));
-
     if (subject.isNotEmpty && defaultQuestionInfo.isValid() && questionContentTextMap.isNotEmpty
         && !answerOptionInfoList.map((e) => e.isValid()).contains(false)) {
       return true;

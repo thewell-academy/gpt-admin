@@ -25,8 +25,10 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
 
   final List<int> years = List.generate(11, (index) => 2015 + index).reversed.toList();
   int? selectedYear;
-  final List<String> months = List.generate(12, (index) => "${index + 1}월");
-  int selectedMonth = 0;
+  final List<int> months = List.generate(12, (index) => index + 1);
+  int? selectedMonth;
+  final List<String> grades = List.generate(3, (index) => "고${index+1}");
+  String? selectedGrade;
 
   QuestionRouterState? _questionRouterState;
 
@@ -105,7 +107,6 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
           CupertinoDialogAction(
             isDestructiveAction: false,
             onPressed: () async {
-              // Indicate that saving is in progress
               setState(() {
                 isSaving = true;
               });
@@ -129,7 +130,7 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
                 );
               });
             },
-            child: Text("저장하기"),
+            child: const Text("저장하기"),
           ),
       ],
     );
@@ -166,10 +167,9 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
             if (!replaceSuccess)
             CupertinoDialogAction(
               child: const Text("덮어쓰기"),
-              onPressed: () {
-                contextSetState() async {
-                  replaceSuccess = await getQuestionSaveResult(questionRouterState, true) == 200;
-                }
+              onPressed: () async {
+                  await getQuestionSaveResult(questionRouterState, true) == 200;
+                  Navigator.pop(context);
               },
             ),
             CupertinoDialogAction(
@@ -218,7 +218,7 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
             ? dynamicSelections[level]["selected"] as String?
             : null;
 
-        final displaySelected = selectedItem ?? "Level ${level + 1} 선택";
+        final displaySelected = selectedItem ?? "유형 ${level + 1} 선택";
 
         return DropdownButton<String>(
           value: selectedItem,
@@ -269,7 +269,7 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
                   flex: 2,
                   child: DropdownButton<String>(
                     value: _selectedSubject,
-                    hint: const Text("과목 선택하기"),
+                    hint: const Text("과목 선택"),
                     items: ["수학", "영어", "과학"].map((subject) {
                       return DropdownMenuItem<String>(
                         value: subject,
@@ -330,7 +330,7 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
                   Flexible(
                     flex: 2,
                     child: DropdownButton<int>(
-                      value: selectedYear, // Matches the type int?
+                      value: selectedYear,
                       hint: const Text("연도 선택"),
                       items: years.map((year) {
                         return DropdownMenuItem<int>(
@@ -349,18 +349,38 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
                   if (_selectedExamType == "모의고사")
                     Flexible(
                       flex: 2,
-                      child: DropdownButton<String>(
-                        value: "$selectedMonth", // Matches the type String?
+                      child: DropdownButton<int>(
+                        value: selectedMonth,
                         hint: const Text("월 선택"),
                         items: months.map((month) {
-                          return DropdownMenuItem<String>(
+                          return DropdownMenuItem<int>(
                             value: month,
-                            child: Text(month),
+                            child: Text("$month"),
                           );
                         }).toList(),
                         onChanged: (month) {
                           setState(() {
-                            selectedMonth = int.parse(month!);
+                            selectedMonth = month;
+                          });
+                        },
+                      ),
+                    ),
+                  const SizedBox(width: 16),
+                  if (_selectedExamType == "모의고사")
+                    Flexible(
+                      flex: 2,
+                      child: DropdownButton<String>(
+                        value: selectedGrade,
+                        hint: const Text("학년"),
+                        items: grades.map((grade) {
+                          return DropdownMenuItem<String>(
+                            value: grade,
+                            child: Text(grade),
+                          );
+                        }).toList(),
+                        onChanged: (grade) {
+                          setState(() {
+                            selectedGrade = grade;
                           });
                         },
                       ),
@@ -388,9 +408,10 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
                   onPressed: () {
 
                     setState(() {
-                      _questionRouterState!.questionModel.defaultQuestionInfo.examMonth = selectedMonth;
+                      _questionRouterState!.questionModel.defaultQuestionInfo.examMonth = selectedMonth?? 0;
                       _questionRouterState!.questionModel.defaultQuestionInfo.examYear = selectedYear!;
                       _questionRouterState!.questionModel.defaultQuestionInfo.exam = _selectedExamType!;
+                      _questionRouterState!.questionModel.defaultQuestionInfo.grade = selectedGrade ?? "";
                     });
 
                     showCupertinoDialog(
