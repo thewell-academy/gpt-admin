@@ -17,10 +17,7 @@ Future<void> main() async {
 }
 
 Future<bool> checkLoginStatus() async {
-
-  return false;
   SharedPreferences prefs = await SharedPreferences.getInstance();
-
   return ((prefs.getBool('isLoggedIn')?? false) && (prefs.getString("userId") != null)) ? true : false;
 }
 
@@ -70,7 +67,7 @@ class _MyAppState extends State<MyApp> {
           : LoginPage.id,
 
       routes: {
-        LoginPage.id: (context) => LoginPage(),
+        LoginPage.id: (context) => const LoginPage(),
         MyHomePage.id: (context) => MyHomePage(
           title: _appTitle,
           appBarColor: _appBarColor,
@@ -110,11 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildPageContent() {
     switch (_selectedPage) {
       case 'Dashboard':
-        return DashBoard();
+        return const DashBoard();
       case 'Users':
-        return Users();
+        return const Users();
       case 'Settings':
-        return Setting();
+        return const Setting();
       case 'Questions':
         return const Questions();
       default:
@@ -139,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Menu Bar
       Container(
       color: Colors.black87,
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -147,28 +144,28 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 _selectPage('Dashboard');
               },
-              child: Text("대시보드"),
+              child: const Text("대시보드"),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             TextButton(
               onPressed: () {
                 _selectPage('Users');
               },
-              child: Text("앱 사용자 관리"),
+              child: const Text("앱 사용자 관리"),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             TextButton(
               onPressed: () {
                 _selectPage('Questions');
               },
-              child: Text("문제 은행"),
+              child: const Text("문제 은행"),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             TextButton(
               onPressed: () {
                 _selectPage('Settings');
               },
-              child: Text("설정"),
+              child: const Text("설정"),
             ),
           ],
         ),

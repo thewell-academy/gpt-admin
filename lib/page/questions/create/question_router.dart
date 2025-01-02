@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thewell_gpt_admin/page/questions/create/question_model/question_router_state.dart';
 import 'package:thewell_gpt_admin/page/questions/create/question_options/math/math_question_option1.dart';
 import 'package:thewell_gpt_admin/page/questions/create/question_options/science/science_question_option1.dart';
-import 'package:thewell_gpt_admin/page/questions/create/util/question_data_handler.dart';
 
 import 'question_model/question_model.dart';
 import 'question_options/english/english_question_option1.dart';
@@ -15,17 +12,13 @@ import 'question_options/english/english_question_option5.dart';
 import 'question_options/english/english_question_option6.dart';
 
 
-
-// Widget for each question page
 class QuestionRouter extends StatefulWidget {
   final QuestionRouterState pageState;
-  // final List<String> questionTypes;
   final Function onDelete;
 
   const QuestionRouter({
     required Key key,
     required this.pageState,
-    // required this.questionTypes,
     required this.onDelete,
   }) : super(key: key);
 

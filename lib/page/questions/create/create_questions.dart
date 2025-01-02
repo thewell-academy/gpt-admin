@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thewell_gpt_admin/page/questions/create/suneung_question_creator.dart';
 
@@ -72,8 +71,6 @@ class _CreateQuestionPageState extends State<CreateQuestionPage> {
         ),
       ),
     );
-
-    return const Text("To be updated");
   }
 
 }

@@ -1,14 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../question_model/question_model.dart';
 
-// 문제 번호, 배점, 보기 옵션, 정답 입력
 class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
-  // util/question_data_handler.dart -> updateDefaultQuestionInfo()
   final Function(QuestionModel, String, String, List<String>, String, List<String>, String, String) onUpdate;
 
   const DefaultQuestionInputField({
@@ -25,10 +22,13 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
 
   String? _selectedQuestionNumber;
   String? _selectedScore; // Declare in the state class
-  String? _selectedQuestionText;
+  String? _selectedQuestionText = "";
 
   String? _selectedAnswer; // Declare in the state class
   String _memo = '';
+
+  bool? isShortAnswer = false;
+  String shortAnswer = "주관식";
 
   // Controllers to hold the text input for each option
   final List<TextEditingController> _optionControllers = List.generate(
@@ -203,7 +203,6 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                     );
                   }).toList(),
                   const SizedBox(height: 16),
-                  // Add and Remove buttons
                   Row(
                     children: [
                       ElevatedButton(
@@ -238,6 +237,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
         TextField(
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            hintText: "따로 없는 경우 적지 않아도 됨"
           ),
           onChanged: (value) {
             setState(() {
@@ -254,9 +254,9 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 16), // Add spacing between options
+        const SizedBox(height: 16),
         Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding around the widget
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(5, (index) {
@@ -270,11 +270,11 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8), // Add spacing before TextField
+                  const SizedBox(height: 8),
                   TextField(
                     controller: _optionControllers[index],
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(), // Add border around TextField
+                      border: const OutlineInputBorder(),
                       hintText: "보기 ${index + 1} 적기",
                     ),
                     style: const TextStyle(fontSize: 14),
@@ -285,7 +285,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                       _updateParent();
                     },
                   ),
-                  const SizedBox(height: 16), // Add spacing between options
+                  const SizedBox(height: 16),
                 ],
 
               );
@@ -297,35 +297,68 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
           "정답",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(
-          width: 100, // Adjust the width to fit the dropdown
-          child: DropdownButton<String>(
-            value: _selectedAnswer, // Bind to a state variable
-            hint: const Text("Select"), // Placeholder text
-            items: ['1','2', '3', '4','5'] // Values for the dropdown
-                .map((value) => DropdownMenuItem(
-              value: value,
-              child: Text(value.toString()),
-            ))
-                .toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedAnswer = newValue; // Update the state with the selected value
-              });
-              _updateParent();
-            },
-            isExpanded: true, // Optional: Make it take the full width
-          ),
+        Row(
+          children: [
+            if (isShortAnswer != true)
+              SizedBox(
+                width: 150,
+                child: DropdownButton<String>(
+                  value: _selectedAnswer,
+                  hint: const Text("답안 고르기"),
+                  items: ['1','2', '3', '4','5']
+                      .map((value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value.toString()),
+                  ))
+                      .toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedAnswer = newValue;
+                    });
+                    _updateParent();
+                  },
+                  isExpanded: true,
+                ),
+              ),
+            if (isShortAnswer == true)
+                  SizedBox(
+                    width: 150,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedAnswer = value;
+                        });
+                        _updateParent();
+                      },
+                    ),
+                  ),
+            Checkbox(
+                value: isShortAnswer,
+                onChanged: (value) {
+                  setState(() {
+                    isShortAnswer = value;
+                  });
+                }
+            ),
+            Text(shortAnswer),
+          ],
         ),
-        const SizedBox(height: 16), // Add spacing between options
+        const SizedBox(height: 16),
         const Text(
           "메모",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 16), // Add spacing between options
+        const SizedBox(height: 16),
         TextField(
           decoration: const InputDecoration(
-            border: OutlineInputBorder(), // Add border around TextField
+            border: OutlineInputBorder(),
             hintText: "단어 힌트 등 메모 적기",
           ),
           style: const TextStyle(fontSize: 14),

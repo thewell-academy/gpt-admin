@@ -67,6 +67,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/html_tutorial.html
+    - assets/math_tutorial.html
 
   fonts:
     - family: TimesTen

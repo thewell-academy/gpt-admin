@@ -1,9 +1,3 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-// 과목 유형 목록
 final Map<String, List<String>> questionTypes = {
   "영어": [
     "글의 목적", "글의 분위기", "대의 파악", "함의 추론", "도표 이해", "내용 일치", "어법 판단", "단어 쓰임 판단", "빈칸 추론", "무관한 문장",
@@ -15,8 +9,6 @@ final Map<String, List<String>> questionTypes = {
   ],
 };
 
-
-// 시험 목록
 Map<String, List<String>> get examList {
   final currentYear = DateTime.now().year;
   return {

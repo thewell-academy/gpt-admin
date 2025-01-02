@@ -1,10 +1,7 @@
 import 'dart:convert';
-
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:thewell_gpt_admin/util/server_config.dart';
 
 
@@ -15,8 +12,6 @@ Timer? _retryTimer;
 Future<void> serverHandShake(Function(String, Color) updateStatus) async {
 
   try {
-    String? deviceId = await PlatformDeviceId.getDeviceId;
-
     final response = await http
         .get(Uri.parse('$serverUrl/ping'))
         .timeout(const Duration(seconds: 5));

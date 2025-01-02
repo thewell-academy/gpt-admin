@@ -46,7 +46,7 @@ class _EnglishQuestionType5State extends State<EnglishQuestionType5> {
             ),
 
             MarkdownInputAndRender(
-              title: '빈칸 지문',
+              title: '원본 지문',
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),

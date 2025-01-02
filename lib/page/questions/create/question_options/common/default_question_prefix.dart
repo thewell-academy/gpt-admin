@@ -19,7 +19,7 @@ class DefaultQuestionPrefix extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DefaultQuestionPrefixState createState() => _DefaultQuestionPrefixState();
+  State<StatefulWidget> createState() => _DefaultQuestionPrefixState();
 }
 
 class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {

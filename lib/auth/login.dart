@@ -39,16 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showLoginFailedDialog(int statusCode) {
-
-    String dialogText;
-    switch (statusCode) {
-      case 401:
-        dialogText = "아이디 또는 비밀번호가 일치하지 않습니다.";
-        break;
-      default:
-        dialogText = "서버 오류가 발생했습니다. code: $statusCode";
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -143,8 +143,6 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
       void Function(void Function()) contextSetState,
       )
     {
-      bool isSaving = false;
-
       if (responseCode == 200) {
         return CupertinoAlertDialog(
           content: const Text("저장되었습니다."),
@@ -215,7 +213,7 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
         if (options.isEmpty) return const SizedBox.shrink();
 
         final selectedItem = level < dynamicSelections.length
-            ? dynamicSelections[level]["selected"] as String?
+            ? dynamicSelections[level]["selected"]
             : null;
 
         final displaySelected = selectedItem ?? "유형 ${level + 1} 선택";

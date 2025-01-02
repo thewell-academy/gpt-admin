@@ -9,11 +9,10 @@ import '../question_model/question_model.dart';
 class MarkdownInputAndRender extends StatefulWidget {
   final QuestionModel questionModel;
   final String title;
-  // util/question_data_handler.dart -> updateHTMLRenderedText()
   final Function(QuestionModel, String, String) onUpdate;
 
-  MarkdownInputAndRender({
-    Key? key,
+  const MarkdownInputAndRender({
+    super.key,
     required this.questionModel,
     required this.title,
     required this.onUpdate
@@ -24,7 +23,7 @@ class MarkdownInputAndRender extends StatefulWidget {
 }
 
 class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
-  String questionText = ''; // Holds the input text for Markdown/HTML code
+  String questionText = '';
 
   void _updateParent() {
     widget.onUpdate(
@@ -44,16 +43,15 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
         children: [
           Text(
             widget.title,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
               fontSize: 16.0
             ),
           ),
           Row(
             children: [
-              // Left side: TextField for Markdown/HTML input
               Expanded(
-                flex: 1, // Give equal space to both widgets
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -64,17 +62,31 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
                           "HTML 입력하기",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(width: 7,),
+                        const SizedBox(width: 7,),
                         TextButton(
                             onPressed: () {
-                              showHtmlDialog(context);
+                              showHtmlGuideDialog(context);
                             },
-                            child: Text(
-                              "HTML 사용 방법 보기",
+                            child: const Text(
+                              "HTML 사용 방법",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline
+                              ),
+                            )
+                        ),
+                        const SizedBox(width: 7,),
+                        TextButton(
+                            onPressed: () {
+                              showMathGuideDialog(context);
+                            },
+                            child: const Text(
+                              "수학 공식 작성 방법",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline
                               ),
                             )
                         )
@@ -88,25 +100,24 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
                         });
                         _updateParent();
                       },
-                      maxLines: 10, // Allow multi-line input
+                      maxLines: 10,
                       decoration: const InputDecoration(
-                        border: OutlineInputBorder(), // Add a border around the text field
+                        border: OutlineInputBorder(),
                         hintText: "HTML 입력하기",
-                        contentPadding: EdgeInsets.all(16), // Add padding inside the text field
+                        contentPadding: EdgeInsets.all(16),
                       ),
                       style: const TextStyle(
-                        fontSize: 14, // Adjust font size for readability
+                        fontSize: 14,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(width: 16), // Space between the two widgets
+              const SizedBox(width: 16),
 
-              // Right side: Rendered HTML output
               Expanded(
-                flex: 1, // Give equal space to both widgets
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -127,10 +138,10 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       )
                           : Html(
-                        data: questionText, // Render HTML content
+                        data: questionText,
                         style: {
                           "body": Style(
-                            fontSize: FontSize.large, // Adjust font size for readability
+                            fontSize: FontSize.large,
                             fontFamily: "TimesTen",
                             fontStyle: FontStyle.normal
                           ),
@@ -142,14 +153,14 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       )
     );
   }
 }
 
-Future<void> showHtmlDialog(BuildContext context) async {
+Future<void> showHtmlGuideDialog(BuildContext context) async {
   // Load the HTML file content
   String htmlContent = await rootBundle.loadString("assets/html_tutorial.html");
 
@@ -162,7 +173,7 @@ Future<void> showHtmlDialog(BuildContext context) async {
 
       return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Optional: Add rounded corners
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Container(
           width: dialogWidth,
@@ -171,33 +182,109 @@ Future<void> showHtmlDialog(BuildContext context) async {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title of the dialog
               const Text(
                 "HTML 사용 가이드",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16), // Add spacing below the title
+              const SizedBox(height: 16),
 
-              // Render the HTML content
               Expanded(
                 child: SingleChildScrollView(
                   child: Html(
-                    data: htmlContent, // Render the HTML content loaded from the file
+                    data: htmlContent,
                     style: {
                       "body": Style(
-                        fontSize: FontSize.large, // Adjust font size for readability
+                        fontSize: FontSize.large,
                       ),
                     },
                   ),
                 ),
               ),
-
-              // Close button at the bottom
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("닫기"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<void> showMathGuideDialog(BuildContext context) async {
+  String htmlContent = await rootBundle.loadString("assets/math_tutorial.html");
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final double dialogWidth = MediaQuery.of(context).size.width * 0.8;
+      final double dialogHeight = MediaQuery.of(context).size.height * 0.9;
+
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          width: dialogWidth,
+          height: dialogHeight,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "HTML 수학 공식 작성 가이드",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Html(
+                    data: htmlContent,
+                    style: {
+                      "body": Style(
+                        fontSize: FontSize.large,
+                        padding: const EdgeInsets.all(10),
+                      ),
+                    },
+                    customRender: {
+                      "pre": (RenderContext context, Widget child) {
+                        return Container(
+                          padding: const EdgeInsets.all(8),
+                          child: SelectableText(
+                            context.tree.element?.text ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 14,
+                            ),
+                          ),
+                        );
+                      },
+                      "math": (RenderContext context, Widget child) {
+                        return SelectableText(
+                          context.tree.element?.outerHtml ?? "",
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 14,
+                          ),
+                        );
+                      },
+                    },
+                  ),
+                ),
+              ),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
                   child: const Text("닫기"),
                 ),

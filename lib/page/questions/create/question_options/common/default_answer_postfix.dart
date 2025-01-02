@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../question_model/question_model.dart';
@@ -25,7 +24,6 @@ class _DefaultQuestionPostfixState extends State<DefaultQuestionPostfix> {
     5,
         (index) => TextEditingController(),
   );
-  final List<String> _options = List.filled(5, '');
 
   @override
   void dispose() {
@@ -44,7 +42,7 @@ class _DefaultQuestionPostfixState extends State<DefaultQuestionPostfix> {
         ElevatedButton(
           onPressed: widget.onDelete,
           style: ElevatedButton.styleFrom(
-            primary: Colors.red, // Red color to indicate a delete action
+            backgroundColor: Colors.red, // Red color to indicate a delete action
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           ),
           child: const Text(
