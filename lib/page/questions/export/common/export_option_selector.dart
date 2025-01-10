@@ -270,7 +270,7 @@ class _ExportQuestionOptionSelectorState extends State<ExportQuestionOptionSelec
         }
 
         final options = currentLevel != null
-            ? ["전체 선택", ...currentLevel.keys.toList()]
+            ? ["전체 선택", ...currentLevel.keys]
             : [];
         if (options.length == 1 && options.contains("전체 선택")) {
           return const SizedBox.shrink();

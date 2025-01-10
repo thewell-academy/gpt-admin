@@ -63,33 +63,33 @@ class _MarkdownInputAndRenderState extends State<MarkdownInputAndRender> {
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 7,),
-                        TextButton(
-                            onPressed: () {
-                              showHtmlGuideDialog(context);
-                            },
-                            child: const Text(
-                              "HTML 사용 방법",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline
-                              ),
-                            )
-                        ),
-                        const SizedBox(width: 7,),
-                        TextButton(
-                            onPressed: () {
-                              showMathGuideDialog(context);
-                            },
-                            child: const Text(
-                              "수학 공식 작성 방법",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline
-                              ),
-                            )
-                        )
+                        // TextButton(
+                        //     onPressed: () {
+                        //       showHtmlGuideDialog(context);
+                        //     },
+                        //     child: const Text(
+                        //       "HTML 사용 방법",
+                        //       style: TextStyle(
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.bold,
+                        //         decoration: TextDecoration.underline
+                        //       ),
+                        //     )
+                        // ),
+                        // const SizedBox(width: 7,),
+                        // TextButton(
+                        //     onPressed: () {
+                        //       // showMathGuideDialog(context);
+                        //     },
+                        //     child: const Text(
+                        //       "수학 공식 작성 방법",
+                        //       style: TextStyle(
+                        //           fontSize: 16,
+                        //           fontWeight: FontWeight.bold,
+                        //           decoration: TextDecoration.underline
+                        //       ),
+                        //     )
+                        // )
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -217,82 +217,82 @@ Future<void> showHtmlGuideDialog(BuildContext context) async {
   );
 }
 
-Future<void> showMathGuideDialog(BuildContext context) async {
-  String htmlContent = await rootBundle.loadString("assets/math_tutorial.html");
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      final double dialogWidth = MediaQuery.of(context).size.width * 0.8;
-      final double dialogHeight = MediaQuery.of(context).size.height * 0.9;
-
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          width: dialogWidth,
-          height: dialogHeight,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "HTML 수학 공식 작성 가이드",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Html(
-                    data: htmlContent,
-                    style: {
-                      "body": Style(
-                        fontSize: FontSize.large,
-                        padding: const EdgeInsets.all(10),
-                      ),
-                    },
-                    customRender: {
-                      "pre": (RenderContext context, Widget child) {
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          child: SelectableText(
-                            context.tree.element?.text ?? "",
-                            style: const TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 14,
-                            ),
-                          ),
-                        );
-                      },
-                      "math": (RenderContext context, Widget child) {
-                        return SelectableText(
-                          context.tree.element?.outerHtml ?? "",
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 14,
-                          ),
-                        );
-                      },
-                    },
-                  ),
-                ),
-              ),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("닫기"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
+// Future<void> showMathGuideDialog(BuildContext context) async {
+//   String htmlContent = await rootBundle.loadString("assets/math_tutorial.html");
+//
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       final double dialogWidth = MediaQuery.of(context).size.width * 0.8;
+//       final double dialogHeight = MediaQuery.of(context).size.height * 0.9;
+//
+//       return Dialog(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(16),
+//         ),
+//         child: Container(
+//           width: dialogWidth,
+//           height: dialogHeight,
+//           padding: const EdgeInsets.all(16),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               const Text(
+//                 "HTML 수학 공식 작성 가이드",
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//               const SizedBox(height: 16),
+//
+//               Expanded(
+//                 child: SingleChildScrollView(
+//                   child: Html(
+//                     data: htmlContent,
+//                     style: {
+//                       "body": Style(
+//                         fontSize: FontSize.large,
+//                         padding: const EdgeInsets.all(10),
+//                       ),
+//                     },
+//                     customRender: {
+//                       "pre": (RenderContext context, Widget child) {
+//                         return Container(
+//                           padding: const EdgeInsets.all(8),
+//                           child: SelectableText(
+//                             context.tree.element?.text ?? "",
+//                             style: const TextStyle(
+//                               fontFamily: 'monospace',
+//                               fontSize: 14,
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                       "math": (RenderContext context, Widget child) {
+//                         return SelectableText(
+//                           context.tree.element?.outerHtml ?? "",
+//                           style: const TextStyle(
+//                             fontFamily: 'monospace',
+//                             fontSize: 14,
+//                           ),
+//                         );
+//                       },
+//                     },
+//                   ),
+//                 ),
+//               ),
+//
+//               Align(
+//                 alignment: Alignment.centerRight,
+//                 child: TextButton(
+//                   onPressed: () {
+//                     Navigator.of(context).pop();
+//                   },
+//                   child: const Text("닫기"),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }

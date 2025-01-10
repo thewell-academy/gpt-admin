@@ -13,10 +13,10 @@ class DefaultQuestionPrefix extends StatefulWidget {
   final Function(QuestionModel, String, String, String, String, String) onUpdate;
 
   const DefaultQuestionPrefix({
-    Key? key,
+    super.key,
     required this.questionModel,
     required this.onUpdate,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _DefaultQuestionPrefixState();

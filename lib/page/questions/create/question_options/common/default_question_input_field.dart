@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_options/common/textfield_widget.dart';
 
 import '../../question_model/question_model.dart';
 
@@ -9,10 +10,10 @@ class DefaultQuestionInputField extends StatefulWidget {
   final Function(QuestionModel, String, String, List<String>, String, List<String>, String, String) onUpdate;
 
   const DefaultQuestionInputField({
-    Key? key,
+    super.key,
     required this.questionModel,
     required this.onUpdate,
-  }): super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _DefaultQuestionInputFieldState();
@@ -29,6 +30,9 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
 
   bool? isShortAnswer = false;
   String shortAnswer = "주관식";
+
+  bool? answerOptionNotExists = false;
+  String answerOptionNotExistsString = "정답 선택지 없음";
 
   // Controllers to hold the text input for each option
   final List<TextEditingController> _optionControllers = List.generate(
@@ -201,7 +205,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -234,27 +238,50 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16,),
-        TextField(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: "따로 없는 경우 적지 않아도 됨"
-          ),
-          onChanged: (value) {
-            setState(() {
-              _selectedQuestionText = value;
-            });
-            _updateParent();
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return SizedBox(
+              height: 500,
+              width: constraints.maxWidth, // Use the parent's width
+              child: TextFieldWidget(alignHorizontal: true, height: 500,),
+            );
           },
         ),
+        // TextField(
+        //   decoration: const InputDecoration(
+        //     border: OutlineInputBorder(),
+        //     hintText: "따로 없는 경우 적지 않아도 됨"
+        //   ),
+        //   onChanged: (value) {
+        //     setState(() {
+        //       _selectedQuestionText = value;
+        //     });
+        //     _updateParent();
+        //   },
+        // ),
         const SizedBox(height: 16),
-        const Text(
-          "정답 선택지",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          children: [
+            const Text(
+              "정답 선택지",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Checkbox(
+                value: answerOptionNotExists,
+                onChanged: (value) {
+                  setState(() {
+                    answerOptionNotExists = value;
+                  });
+                }
+            ),
+            Text(answerOptionNotExistsString),
+          ],
         ),
         const SizedBox(height: 16),
+        if (answerOptionNotExists != null && !answerOptionNotExists!)
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -271,20 +298,21 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _optionControllers[index],
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: "보기 ${index + 1} 적기",
-                    ),
-                    style: const TextStyle(fontSize: 14),
-                    onChanged: (value) {
-                      setState(() {
-                        _options[index] = value;
-                      });
-                      _updateParent();
-                    },
-                  ),
+                  // TextField(
+                  //   controller: _optionControllers[index],
+                  //   decoration: InputDecoration(
+                  //     border: const OutlineInputBorder(),
+                  //     hintText: "보기 ${index + 1} 적기",
+                  //   ),
+                  //   style: const TextStyle(fontSize: 14),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _options[index] = value;
+                  //     });
+                  //     _updateParent();
+                  //   },
+                  // ),
+                  TextFieldWidget(alignHorizontal: true, height: 100,),
                   const SizedBox(height: 16),
                 ],
 

@@ -174,14 +174,14 @@ class _UsersState extends State<Users> {
                         _fetchUsers();
                       },
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.green)
                       ),
                     ),
                     const SizedBox(width: 30),
                     ElevatedButton(
                       onPressed: _addUser,
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
                       ),
                       child: const Text("학생 추가하기"),
 

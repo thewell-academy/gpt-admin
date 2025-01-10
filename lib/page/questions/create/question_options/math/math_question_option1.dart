@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../question_model/question_model.dart';
 import '../../util/latex_input_renderer.dart';
 import '../../util/question_data_handler.dart';
+import '../common/textfield_widget.dart';
 import '../common/default_answer_postfix.dart';
 import '../common/default_question_input_field.dart';
 import '../common/default_question_prefix.dart';
@@ -37,12 +38,6 @@ class _MathQuestionType1State extends State<MathQuestionType1> {
             DefaultQuestionPrefix(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateDefaultQuestionInfo,
-            ),
-
-            MarkdownInputAndRender(
-              title: '문제 지문',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
             ),
 
             DefaultQuestionInputField(

@@ -8,10 +8,10 @@ class DefaultQuestionPostfix extends StatefulWidget {
   final VoidCallback onDelete; // Callback for deletion
 
   const DefaultQuestionPostfix({
-    Key? key,
+    super.key,
     required this.questionModel,
     required this.onDelete,
-  }): super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _DefaultQuestionPostfixState();
