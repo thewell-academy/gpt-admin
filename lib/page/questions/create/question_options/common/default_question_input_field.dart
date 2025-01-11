@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thewell_gpt_admin/page/questions/create/question_options/common/textfield_widget.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_options/common/text_input_field_and_renderer.dart';
 
 import '../../question_model/question_model.dart';
 
@@ -8,11 +8,13 @@ class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
   final Function(QuestionModel, String, String, List<String>, String, List<String>, String, String) onUpdate;
+  final double questionTextFieldHeight;
 
   const DefaultQuestionInputField({
     super.key,
     required this.questionModel,
     required this.onUpdate,
+    required this.questionTextFieldHeight,
   });
 
   @override
@@ -22,8 +24,8 @@ class DefaultQuestionInputField extends StatefulWidget {
 class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
 
   String? _selectedQuestionNumber;
-  String? _selectedScore; // Declare in the state class
-  String? _selectedQuestionText = "";
+  String? _selectedScore;
+  String _selectedQuestionText = "";
 
   String? _selectedAnswer; // Declare in the state class
   String _memo = '';
@@ -34,7 +36,6 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
   bool? answerOptionNotExists = false;
   String answerOptionNotExistsString = "정답 선택지 없음";
 
-  // Controllers to hold the text input for each option
   final List<TextEditingController> _optionControllers = List.generate(
     5,
         (index) => TextEditingController(),
@@ -233,33 +234,15 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
           ],
         ),
         const SizedBox(height: 16),
-        const Text(
-          "문제",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        TextInputFieldAndRenderer(
+          title: "문제",
+          questionModel: widget.questionModel,
+          onUpdate: (String updatedData) {
+            setState(() { _selectedQuestionText = updatedData; });
+            _updateParent();
+            },
+          height: widget.questionTextFieldHeight,
         ),
-        const SizedBox(height: 16,),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SizedBox(
-              height: 500,
-              width: constraints.maxWidth, // Use the parent's width
-              child: TextFieldWidget(alignHorizontal: true, height: 500,),
-            );
-          },
-        ),
-        // TextField(
-        //   decoration: const InputDecoration(
-        //     border: OutlineInputBorder(),
-        //     hintText: "따로 없는 경우 적지 않아도 됨"
-        //   ),
-        //   onChanged: (value) {
-        //     setState(() {
-        //       _selectedQuestionText = value;
-        //     });
-        //     _updateParent();
-        //   },
-        // ),
-        const SizedBox(height: 16),
         Row(
           children: [
             const Text(
@@ -290,14 +273,25 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "정답 ${index + 1}",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  TextInputFieldAndRenderer(
+                      questionModel: widget.questionModel,
+                      title: "정답 ${index + 1}",
+                      onUpdate: (String value) {
+                        setState(() {
+                          _options[index] = value;
+                        });
+                        _updateParent();
+                      },
+                      height: 150,
+                  )
+                  // Text(
+                  //   "정답 ${index + 1}",
+                  //   style: const TextStyle(
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 8),
                   // TextField(
                   //   controller: _optionControllers[index],
                   //   decoration: InputDecoration(
@@ -312,8 +306,8 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                   //     _updateParent();
                   //   },
                   // ),
-                  TextFieldWidget(alignHorizontal: true, height: 100,),
-                  const SizedBox(height: 16),
+                  // RichTextField(alignHorizontal: true, height: 100,),
+                  // const SizedBox(height: 16),
                 ],
 
               );

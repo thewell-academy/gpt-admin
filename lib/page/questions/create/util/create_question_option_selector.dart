@@ -65,7 +65,9 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
     bool isSaving = false;
     bool isSuccess = false;
 
-    // 문제 데이터가 정확히 입력되지 않은 경우
+    print("_questionRouterState == null: ${_questionRouterState == null}");
+    print("!_questionRouterState!.questionModel.isValid(): ${!_questionRouterState!.questionModel.isValid()}");
+    print("---");
     if (_questionRouterState == null || !_questionRouterState!.questionModel.isValid()) {
       return CupertinoAlertDialog(
         title: const Text("문제 데이터 검증 필요"),

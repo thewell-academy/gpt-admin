@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../question_model/question_model.dart';
-import '../../util/latex_input_renderer.dart';
+import '../common/default_content_text_input_field.dart';
 import '../../util/question_data_handler.dart';
 import '../common/default_answer_postfix.dart';
 import '../common/default_question_input_field.dart';
@@ -39,43 +39,51 @@ class _EnglishQuestionType6State extends State<EnglishQuestionType6> {
               onUpdate: QuestionDataHandler.updateDefaultQuestionInfo,
             ),
 
-            MarkdownInputAndRender(
+            DefaultContentTextInputField(
               title: '지문 A',
               questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+              onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+              questionTextFieldHeight: 500,
+
             ),
 
-            MarkdownInputAndRender(
+            DefaultContentTextInputField(
               title: '지문 B',
               questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+              onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+              questionTextFieldHeight: 500,
             ),
 
-            MarkdownInputAndRender(
+            DefaultContentTextInputField(
               title: '지문 C',
               questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+              onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+              questionTextFieldHeight: 500,
             ),
 
-            MarkdownInputAndRender(
+            DefaultContentTextInputField(
               title: '지문 D',
               questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+              onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+              questionTextFieldHeight: 500,
             ),
 
             DefaultQuestionInputField(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionTextFieldHeight: 150,
             ),
 
             DefaultQuestionInputField(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionTextFieldHeight: 150,
             ),
 
             DefaultQuestionInputField(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionTextFieldHeight: 150,
             ),
 
             DefaultQuestionPostfix(

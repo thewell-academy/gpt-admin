@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thewell_gpt_admin/page/questions/create/question_options/common/default_content_text_input_field.dart';
 import '../../question_model/question_model.dart';
-import '../../util/latex_input_renderer.dart';
 import '../../util/question_data_handler.dart';
 import '../common/default_answer_postfix.dart';
 import '../common/default_question_input_field.dart';
@@ -24,13 +24,12 @@ class EnglishQuestionType1 extends StatefulWidget {
 }
 
 class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
-  String? questionText; // Holds the text input by the user
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0), // Add padding around the content
-      child: SingleChildScrollView( // Make the content scrollable
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,21 +38,24 @@ class _EnglishQuestionType1State extends State<EnglishQuestionType1> {
               onUpdate: QuestionDataHandler.updateDefaultQuestionInfo,
             ),
 
-            MarkdownInputAndRender(
-              title: '문제 지문',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+            DefaultContentTextInputField(
+                questionModel: widget.questionModel,
+                title: "문제 지문",
+                onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+                questionTextFieldHeight: 500
             ),
 
-            MarkdownInputAndRender(
-              title: '지문 원본 (정답이 추가된, 완벽한 지문을 적어주세요)',
-              questionModel: widget.questionModel,
-              onUpdate: QuestionDataHandler.updateHTMLRenderedText,
+            DefaultContentTextInputField(
+                questionModel: widget.questionModel,
+                title: "지문 원본 (정답이 추가된, 완벽한 지문을 적어주세요)",
+                onUpdate: QuestionDataHandler.updateDeltaTextForContentTextMap,
+                questionTextFieldHeight: 500
             ),
 
             DefaultQuestionInputField(
-                questionModel: widget.questionModel,
-                onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionModel: widget.questionModel,
+              onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
+              questionTextFieldHeight: 150,
             ),
 
             DefaultQuestionPostfix(

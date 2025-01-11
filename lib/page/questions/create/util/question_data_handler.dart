@@ -19,12 +19,12 @@ class QuestionDataHandler {
     questionModel.defaultQuestionInfo.filePath = filePath;
   }
 
-  static void updateHTMLRenderedText(
+  static void updateDeltaTextForContentTextMap(
       QuestionModel questionModel,
-      String note,
-      String htmlText,
+      String title,
+      String contentTextString,
       ) {
-    questionModel.questionContentTextMap[note] = htmlText;
+    questionModel.questionContentTextMap[title] = contentTextString;
   }
 
   static void updateAnswerOptionsInfo(

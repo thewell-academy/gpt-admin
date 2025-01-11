@@ -12,7 +12,7 @@ class QuestionModel {
     required this.subject,
     required this.defaultQuestionInfo,
     required this.answerOptionInfoList,
-    Map<String, dynamic>? questionContentTextMap, // Use nullable for custom initialization
+    Map<String, dynamic>? questionContentTextMap,
   }) : questionContentTextMap = questionContentTextMap ?? {};
 
   Map<String, dynamic> toJson() {
@@ -32,7 +32,12 @@ class QuestionModel {
 
   bool isValid() {
 
-    if (subject.isNotEmpty && defaultQuestionInfo.isValid() && questionContentTextMap.isNotEmpty
+    print("subject.isNotEmpty: ${subject.isNotEmpty}");
+    print("defaultQuestionInfo.isValid(): ${defaultQuestionInfo.isValid()}");
+    print("questionContentTextMap.isNotEmpty: ${questionContentTextMap.isNotEmpty}");
+    print("!answerOptionInfoList.map((e) => e.isValid()).contains(false): ${!answerOptionInfoList.map((e) => e.isValid()).contains(false)}");
+
+    if (subject.isNotEmpty && defaultQuestionInfo.isValid()
         && !answerOptionInfoList.map((e) => e.isValid()).contains(false)) {
       return true;
     } else {
