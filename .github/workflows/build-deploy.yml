@@ -22,6 +22,9 @@ jobs:
       - name: Add Flutter to PATH
         run: echo "export PATH=\$PATH:$HOME/flutter/bin" >> $GITHUB_ENV
 
+      - name: Reload Environment
+        run: source $GITHUB_ENV
+
       - name: Flutter Upgrade
         run: flutter upgrade
 
