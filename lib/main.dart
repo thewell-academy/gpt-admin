@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thewell_gpt_admin/page/dashboard/dashboard.dart';
 import 'package:thewell_gpt_admin/page/questions/questions_main.dart';
@@ -10,8 +11,14 @@ import 'package:thewell_gpt_admin/util/util.dart';
 import 'auth/login.dart';
 
 Future<void> main() async {
-  bool isLoggedIn = await checkLoginStatus();
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    print("Documents directory: ${directory.path}");
+  } catch (e) {
+    print("Error accessing documents directory: $e");
+  }
+  bool isLoggedIn = await checkLoginStatus();
   print("Backend Server Listening: $gptServerUrl");
   runApp(MyApp(isLoggedIn: isLoggedIn,));
 }

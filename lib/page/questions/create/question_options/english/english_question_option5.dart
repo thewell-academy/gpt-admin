@@ -57,12 +57,14 @@ class _EnglishQuestionType5State extends State<EnglishQuestionType5> {
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               questionTextFieldHeight: 150,
+              questionOrder: 0,
             ),
 
             DefaultQuestionInputField(
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               questionTextFieldHeight: 150,
+              questionOrder: 1,
             ),
 
             DefaultQuestionPostfix(

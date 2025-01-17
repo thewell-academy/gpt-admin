@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:html';
-// import 'dart:html';
+import 'dart:io' as io;
+import 'dart:html' as html;
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import '../../../../util/server_config.dart';
 import '../question_model/question_router_state.dart';
 
@@ -88,7 +89,7 @@ Future<int?> sendQuestionWithoutFile(QuestionRouterState questionPageState, bool
 
 }
 
-Future<File?> getExportedQuestionBankFile(
+Future<io.File?> getExportedQuestionBankFile(
     String subject,
     String exam,
     List<String> selections,
@@ -106,12 +107,26 @@ Future<File?> getExportedQuestionBankFile(
     "months": months.map((e) => e.toString()).join(","),
     "grades": grades.join(",")
   });
-  var request = http.Request('GET', uri);
+  // var request = http.Request('GET', uri);
 
   try {
-    var response =  await request.send();
-    print(response.statusCode);
-    return null;
+    final client = http.Client();
+    final response = await client.get(uri);
+
+    final fileName = "output.docx";
+    if (response.statusCode == 200) {
+      final blob = html.Blob([response.bodyBytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..target = 'blank'
+        ..download = fileName;
+      anchor.click();
+      html.Url.revokeObjectUrl(url);
+      print("File downloaded successfully: $fileName");
+    } else {
+      print("Failed to download file. Status code: ${response.statusCode}");
+    }
+
   } catch (e) {
     print("Error: $e");
   }

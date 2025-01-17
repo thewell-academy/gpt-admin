@@ -41,6 +41,7 @@ class _EnglishQuestionType2State extends State<EnglishQuestionType2> {
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               questionTextFieldHeight: 150,
+              questionOrder: 0,
             ),
 
             DefaultQuestionPostfix(

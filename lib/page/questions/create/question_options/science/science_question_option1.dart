@@ -42,6 +42,7 @@ class _ScienceQuestionType1State extends State<ScienceQuestionType1> {
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               questionTextFieldHeight: 150,
+              questionOrder: 0,
             ),
 
             DefaultQuestionPostfix(

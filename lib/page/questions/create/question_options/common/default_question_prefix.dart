@@ -23,13 +23,13 @@ class DefaultQuestionPrefix extends StatefulWidget {
 }
 
 class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
-  String? _selectedExam; // Selected exam type (e.g., "수능" or "모의고사")
-  String? _selectedYear; // Selected year or sub-item
+  String? _selectedExam;
+  String? _selectedYear;
   String? _selectedMonth;
   String? _selectedGrade;
   String ? _selectedFilePath;
-  String? _selectedFileName; // Store the selected file's name or path
-  Uint8List? _selectedFileBytes; // File bytes for web platforms
+  String? _selectedFileName;
+  Uint8List? _selectedFileBytes;
 
   void _fileSelectRouter() async {
     if (_selectedFilePath != null || _selectedFileBytes != null) {
@@ -37,7 +37,7 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
         context: context,
         builder: (context) => CupertinoAlertDialog(
           title: const Text("사진 삭제"),
-          content: const Text("사진을 삭제하시겠습니까?"),
+          content: const Text("사진을 삭제 하시겠습니까?"),
           actions: [
             CupertinoDialogAction(
               isDefaultAction: true,
@@ -55,7 +55,7 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                   _selectedFilePath = null;
                   _selectedFileName = null;
                 });
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
             ),
           ],
@@ -67,24 +67,21 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
   }
 
   void _pickFile() async {
-    // Open file picker
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image, // Restrict to image files
+      type: FileType.image,
     );
 
     if (result != null) {
       setState(() {
-        _selectedFileName = result.files.single.name; // Get the file name
+        _selectedFileName = result.files.single.name;
 
 
         if (kIsWeb) {
-          // Web: Use bytes as no path is available
           _selectedFileBytes = result.files.single.bytes;
-          _selectedFilePath = null; // Explicitly set to null for clarity
+          _selectedFilePath = null;
         } else {
-          // Non-web platforms: Use the file path
           _selectedFilePath = result.files.single.path;
-          _selectedFileBytes = null; // Explicitly set to null for clarity
+          _selectedFileBytes = null;
         }
       });
       widget.questionModel.defaultQuestionInfo.selectedFileBytes = _selectedFileBytes;
@@ -117,7 +114,7 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                 "세부 연도 / 월 선택: $_selectedExam",
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16), // Add spacing after Markdown input
+              const SizedBox(height: 16),
               Wrap(
                 spacing: 16,
                 runSpacing: 8,
@@ -192,7 +189,6 @@ class _DefaultQuestionPrefixState extends State<DefaultQuestionPrefix> {
                               _selectedMonth = value!;
                             });
                             _updateParent();
-                            // Handle month selection logic if needed
                           },
                         ),
                       ],

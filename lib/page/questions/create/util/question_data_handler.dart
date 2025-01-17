@@ -4,7 +4,6 @@ import '../question_model/question_model.dart';
 
 class QuestionDataHandler {
 
-  // 유형, 배점, 시험 연월, 문제 텍스트 등
   static void updateDefaultQuestionInfo(
       QuestionModel questionModel,
       String exam,
@@ -29,6 +28,7 @@ class QuestionDataHandler {
 
   static void updateAnswerOptionsInfo(
       QuestionModel questionModel,
+      int questionOrder, // newly added
       String selectedQuestionNumber,
       String selectedScore,
       List<String> abcOptionList,
@@ -40,7 +40,9 @@ class QuestionDataHandler {
     int questionNumber = int.tryParse(selectedQuestionNumber) ?? 0;
     int questionScore = int.tryParse(selectedScore) ?? 0;
     int answer = int.tryParse(selectedAnswer) ?? 0;
-    AnswerOptionInfoModel answerOptionInfoModel = AnswerOptionInfoModel(
+    AnswerOptionInfoModel answerOptionInfoModel =
+    AnswerOptionInfoModel(
+      questionOrder: questionOrder,
         questionNumber: questionNumber,
         questionScore: questionScore,
         abcOptionList: abcOptionList,
@@ -55,6 +57,7 @@ class QuestionDataHandler {
     );
 
     if (answerOptionInfoModel.isValid()) {
+      questionModel.answerOptionInfoList.removeWhere((item) => item.questionOrder == questionOrder);
       questionModel.answerOptionInfoList.add(answerOptionInfoModel);
     }
   }

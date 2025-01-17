@@ -1,5 +1,5 @@
-// 질문 모델
 class AnswerOptionInfoModel {
+  int questionOrder = 0;
   int questionNumber = 0;
   int questionScore = 0;
   List<String> abcOptionList = [];
@@ -13,6 +13,7 @@ class AnswerOptionInfoModel {
   String memo = '';
 
   AnswerOptionInfoModel({
+    required this.questionOrder,
     required this.questionNumber,
     required this.questionScore,
     required this.abcOptionList,

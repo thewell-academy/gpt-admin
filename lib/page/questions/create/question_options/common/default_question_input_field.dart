@@ -7,14 +7,16 @@ import '../../question_model/question_model.dart';
 class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
-  final Function(QuestionModel, String, String, List<String>, String, List<String>, String, String) onUpdate;
+  final Function(QuestionModel, int,  String, String, List<String>, String, List<String>, String, String) onUpdate;
   final double questionTextFieldHeight;
+  final int questionOrder;
 
   const DefaultQuestionInputField({
     super.key,
     required this.questionModel,
     required this.onUpdate,
     required this.questionTextFieldHeight,
+    required this.questionOrder,
   });
 
   @override
@@ -99,6 +101,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
   void _updateParent() {
     widget.onUpdate(
         widget.questionModel,
+        widget.questionOrder,
         _selectedQuestionNumber?? '',
         _selectedScore?? '',
         abcOptionList,
@@ -144,11 +147,11 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
         ),
         const SizedBox(height: 16,),
         SizedBox(
-          width: 100, // Adjust the width to fit the dropdown
+          width: 100,
           child: DropdownButton<String>(
-            value: _selectedScore, // Bind to a state variable
-            hint: const Text("Select"), // Placeholder text
-            items: ['2', '3', '4'] // Values for the dropdown
+            value: _selectedScore,
+            hint: const Text("Select"),
+            items: ['2', '3', '4']
                 .map((value) => DropdownMenuItem(
               value: value,
               child: Text(value.toString()),
@@ -160,7 +163,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
               });
               _updateParent();
             },
-            isExpanded: true, // Optional: Make it take the full width
+            isExpanded: true,
           ),
         ),
         const SizedBox(height: 16,),
@@ -185,7 +188,6 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
             if (abcOptionExists)
               Column(
                 children: [
-                  // List of TextFields
                   ..._abcControllers.map((entry) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),

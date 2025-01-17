@@ -42,6 +42,7 @@ class _MathQuestionType1State extends State<MathQuestionType1> {
               questionModel: widget.questionModel,
               onUpdate: QuestionDataHandler.updateAnswerOptionsInfo,
               questionTextFieldHeight: 150,
+              questionOrder: 0,
             ),
 
             DefaultQuestionPostfix(
