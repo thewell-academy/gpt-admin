@@ -16,11 +16,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.8'
+          flutter-version: '3.10.0' # Updated to a version compatible with Dart 3.x
 
       - name: Install Dependencies
         run: flutter pub get
-      
+
       - name: Make server_config.sh Executable
         run: chmod +x ./server_config.sh
 
