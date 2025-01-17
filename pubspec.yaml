@@ -36,18 +36,25 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_tex: ^4.0.3+1
-  flutter_markdown: ^0.6.9+1
-  device_info_plus: ^4.0.0
+  flutter_markdown: ^0.7.5
+  device_info_plus: ^11.2.0
   platform_device_id: ^1.0.1
   shared_preferences: ^2.0.6
-  http: ^0.13.6
-  modal_progress_hud_nsn: ^0.2.0
-  file_picker: ^5.2.5
-  flutter_math_fork: ^0.6.0
-  flutter_html: ^2.2.1
+  http: ^1.2.2
+  modal_progress_hud_nsn: ^0.5.1
+  file_picker: ^8.1.7
+  flutter_math_fork: ^0.7.3
+  flutter_html: ^3.0.0-beta.2
+  flutter_quill: ^10.8.5
+  path_provider: ^2.0.11  # Use the latest version
+  open_file: ^3.2.1
 
-dependency_overrides:
-  flutter_svg: ^1.0.0
+#dependency_overrides:
+#  file_picker:
+#    git:
+#      url: https://github.com/miguelpruivo/flutter_file_picker.git
+#      ref: master
+#  flutter_svg: ^0.22.0
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +65,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,6 +74,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/html_tutorial.html
+    - assets/math_tutorial.html
 
   fonts:
     - family: TimesTen

@@ -1,13 +1,10 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:thewell_gpt_admin/util/util.dart';
 
 class AddUsersDialog extends StatefulWidget {
+  const AddUsersDialog({super.key});
+
   @override
-  _AddUsersDialogState createState() => _AddUsersDialogState();
+  createState() => _AddUsersDialogState();
 }
 
 class _AddUsersDialogState extends State<AddUsersDialog> {
@@ -37,7 +34,7 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
   void _removeUserFields(int index) {
     setState(() {
       userControllers.removeAt(index);
-      passwordMismatchError.removeAt(index); // Remove error state for the user
+      passwordMismatchError.removeAt(index);
       fieldNotFilledError.removeAt(index);
     });
   }
@@ -66,37 +63,21 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
         passwordMismatchError[i] = false;
       }
     }
-    setState(() {}); // Update the UI to show error messages
+    setState(() {});
     return allMatch;
   }
 
   void _submitData() async {
     if (!_validatePasswords()) {
-      return; // Stop if there are password mismatches
+      return;
     }
-
-    // Collect user data and submit
-    List<Map<String, String>> usersData = userControllers.map((user) {
-      return {
-        "id": user["id"]!.text,
-        "name": user["name"]!.text,
-        "password": user["password"]!.text,
-      };
-    }).toList();
-
-
-    final response = await http.post(
-      Uri.parse('$serverUrl/admin/add/users'),
-      body: jsonEncode(usersData)
-    );
-
     Navigator.of(context).pop();
   }
 
     @override
     Widget build(BuildContext context) {
       return AlertDialog(
-        title: Text("사용자 추가하기"),
+        title: const Text("사용자 추가하기"),
         content: SingleChildScrollView(
           child: Column(
             children: [
@@ -107,24 +88,24 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
                     key: ValueKey(index),
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("사용자 ${index + 1}", style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(height: 5),
+                      Text("사용자 ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 5),
                       TextField(
                         controller: controller["id"],
-                        decoration: InputDecoration(labelText: "아이디"),
+                        decoration: const InputDecoration(labelText: "아이디"),
                       ),
                       TextField(
                         controller: controller["name"],
-                        decoration: InputDecoration(labelText: "이름"),
+                        decoration: const InputDecoration(labelText: "이름"),
                       ),
                       TextField(
                         controller: controller["password"],
-                        decoration: InputDecoration(labelText: "비밀번호"),
+                        decoration: const InputDecoration(labelText: "비밀번호"),
                         obscureText: true,
                       ),
                       TextField(
                         controller: controller["retypePassword"],
-                        decoration: InputDecoration(labelText: "비밀번호 재입력"),
+                        decoration: const InputDecoration(labelText: "비밀번호 재입력"),
                         obscureText: true,
                       ),
                       if (fieldNotFilledError[index])
@@ -147,7 +128,7 @@ class _AddUsersDialogState extends State<AddUsersDialog> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.remove_circle, color: Colors.red),
+                            icon: const Icon(Icons.remove_circle, color: Colors.red),
                             onPressed: () => _removeUserFields(index),
                           ),
                         ],

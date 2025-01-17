@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:thewell_gpt_admin/page/questions/create/util/create_question_option_selector.dart';
 
-import 'common/export_option_selector.dart';
-
-class SuneungQuestionExporter extends StatefulWidget {
-  const SuneungQuestionExporter({super.key});
+class SuneungQuestionCreator extends StatefulWidget {
+  const SuneungQuestionCreator({super.key});
 
   @override
-  State<StatefulWidget> createState() => SuneungQuestionExporterState();
+  State<StatefulWidget> createState() => _SuneungQuestionCreatorState();
+
 }
 
-class SuneungQuestionExporterState extends State<SuneungQuestionExporter> {
+class _SuneungQuestionCreatorState extends State<SuneungQuestionCreator> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +25,7 @@ class SuneungQuestionExporterState extends State<SuneungQuestionExporter> {
           ),
           SizedBox(height: 16),
           Expanded(
-            child: ExportQuestionOptionSelector(),
+            child: CreateQuestionOptionSelector(),
           ),
         ],
       ),

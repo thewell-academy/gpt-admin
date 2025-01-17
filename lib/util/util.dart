@@ -1,8 +1,7 @@
-import 'package:platform_device_id/platform_device_id.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:thewell_gpt_admin/util/server_config.dart';
 
 
@@ -13,8 +12,6 @@ Timer? _retryTimer;
 Future<void> serverHandShake(Function(String, Color) updateStatus) async {
 
   try {
-    String? deviceId = await PlatformDeviceId.getDeviceId;
-
     final response = await http
         .get(Uri.parse('$serverUrl/ping'))
         .timeout(const Duration(seconds: 5));
@@ -43,4 +40,12 @@ Future<void> serverHandShake(Function(String, Color) updateStatus) async {
     // Retry after 5 seconds
     _retryTimer = Timer(const Duration(seconds: 5), () => serverHandShake(updateStatus));
   }
+}
+
+Future<Map<String, dynamic>> fetchSubjectDetails(String subject) async {
+
+  final response = await http
+      .get(Uri.parse('$serverUrl/question-bank/subject-details/$subject'));
+
+  return await jsonDecode(utf8.decode(response.bodyBytes));
 }

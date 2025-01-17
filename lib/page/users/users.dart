@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:thewell_gpt_admin/page/users/add_user_dialog.dart';
 import 'package:thewell_gpt_admin/page/users/user_item.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +6,8 @@ import 'package:thewell_gpt_admin/util/util.dart';
 import 'dart:convert';
 
 class Users extends StatefulWidget {
+  const Users({super.key});
+
   @override
   State<StatefulWidget> createState() => _UsersState();
 }
@@ -28,21 +28,15 @@ class _UsersState extends State<Users> {
     _fetchUsers();
   }
 
-  // Mock function to fetch user data
   Future<void> _fetchUsers() async {
     setState(() => isLoading = true);
-    // Replace this mock data with actual API call
 
     final response = await http.get(
       Uri.parse("$serverUrl/admin/get/users")
     );
 
-    // Step 2: Parse the valid JSON string to a list of dynamic maps
     List<dynamic> decodedList = json.decode(response.body);
-
-    // Step 3: Convert each item in the list to a Map<String, String>
     List<Map<String, String>> listOfResponse = decodedList.map((item) {
-      // Ensure the map has String keys and values
       return (item as Map<String, dynamic>).map((key, value) {
         return MapEntry(key.toString(), value.toString());
       });
@@ -61,12 +55,11 @@ class _UsersState extends State<Users> {
   void _addUser() {
     showDialog(
         context: context,
-        builder: (BuildContext context) => AddUsersDialog()
+        builder: (BuildContext context) => const AddUsersDialog()
     );
   }
 
   void _searchUsers() {
-    // Implement your search logic here
     String query = searchController.text;
     print("Searching for users with query: $query");
   }
@@ -76,11 +69,11 @@ class _UsersState extends State<Users> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("사용자 삭제"),
-          content: Text("사용자를 삭제하시겠습니까?"),
+          title: const Text("사용자 삭제"),
+          content: const Text("사용자를 삭제하시겠습니까?"),
           actions: [
             TextButton(
-              child: Text("닫기"),
+              child: const Text("닫기"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -92,7 +85,7 @@ class _UsersState extends State<Users> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text("확인"),
+              child: const Text("확인"),
             ),
           ],
         );
@@ -150,7 +143,7 @@ class _UsersState extends State<Users> {
 
       return Scaffold(
         body: isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
           child: Column(
             children: [
@@ -159,38 +152,38 @@ class _UsersState extends State<Users> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.2,
                       child: TextField(
                         controller: searchController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: '사용자 이름 검색...',
                           border: OutlineInputBorder(),
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: _searchUsers,
-                      child: Text("검색"),
+                      child: const Text("검색"),
                     ),
-                    SizedBox(width: 30),
+                    const SizedBox(width: 30),
                     IconButton(
-                      icon: Icon(Icons.refresh_outlined),
+                      icon: const Icon(Icons.refresh_outlined),
                       onPressed: () {
                         _fetchUsers();
                       },
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.green)
                       ),
                     ),
-                    SizedBox(width: 30),
+                    const SizedBox(width: 30),
                     ElevatedButton(
                       onPressed: _addUser,
-                      child: Text("학생 추가하기"),
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
                       ),
+                      child: const Text("학생 추가하기"),
 
                     ),
                   ],
@@ -207,18 +200,18 @@ class _UsersState extends State<Users> {
                           currentPage = currentPage > 0 ? currentPage - 1 : currentPage;
                         });
                       },
-                      child: Text("이전 페이지"),
+                      child: const Text("이전 페이지"),
                     ),
-                    SizedBox(width: 50),  // Space between button and text
+                    const SizedBox(width: 50),  // Space between button and text
                     Text("Page ${currentPage + 1} of ${(users.length / 20).ceil()}"),
-                    SizedBox(width: 50),  // Space between text and next button
+                    const SizedBox(width: 50),  // Space between text and next button
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
                           currentPage = (currentPage + 1) * 20 < users.length ? currentPage + 1 : currentPage;
                         });
                       },
-                      child: Text("다음 페이지"),
+                      child: const Text("다음 페이지"),
                     ),
                   ],
                 ),
@@ -240,16 +233,14 @@ class _UsersState extends State<Users> {
                           Row(
                             children: [
                               IconButton(
-                                icon: Icon(Icons.visibility),
+                                icon: const Icon(Icons.visibility),
                                 onPressed: () async  {
                                   await _fetchPassword(user.id);
-                                  print(passwordReady);
-                                  print(fetchedPassword);
                                   _showUserDetails(user);
                                 } ,
                               ),
                               IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                                 onPressed: () => _deleteUser(user.id),
                               ),
                             ],
@@ -271,18 +262,18 @@ class _UsersState extends State<Users> {
                           currentPage = currentPage > 0 ? currentPage - 1 : currentPage;
                         });
                       },
-                      child: Text("이전 페이지"),
+                      child: const Text("이전 페이지"),
                     ),
-                    SizedBox(width: 50),  // Space between button and text
+                    const SizedBox(width: 50),
                     Text("Page ${currentPage + 1} of ${(users.length / 20).ceil()}"),
-                    SizedBox(width: 50),  // Space between text and next button
+                    const SizedBox(width: 50),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
                           currentPage = (currentPage + 1) * 20 < users.length ? currentPage + 1 : currentPage;
                         });
                       },
-                      child: Text("다음 페이지"),
+                      child: const Text("다음 페이지"),
                     ),
                   ],
                 ),

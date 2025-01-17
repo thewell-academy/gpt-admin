@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class Setting extends StatefulWidget {
+  const Setting({super.key});
+
   @override
   State<StatefulWidget> createState() => _SettingState();
 
@@ -9,7 +11,7 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("To be updated"),);
+    return const Center(child: Text("To be updated"),);
   }
 
 }
