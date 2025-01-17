@@ -16,19 +16,21 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.6'  # Use Dart SDK 3.5.0 or later
+          flutter-version: 'master' # Use the master channel for the latest updates
+
+      - name: Upgrade Flutter
+        run: flutter upgrade
 
       - name: Clear Pub Cache
-        run: flutter pub cache clean  # Optional: Clear any cached dependencies
+        run: flutter pub cache clean
+
+      - name: Validate Flutter and Dart Versions
+        run: |
+          flutter --version
+          dart --version
 
       - name: Install Dependencies
         run: flutter pub get
-
-      - name: Make server_config.sh Executable
-        run: chmod +x ./server_config.sh
-
-      - name: Run Server Config Script
-        run: bash ./server_config.sh
 
       - name: Build Web
         run: flutter build web --release
