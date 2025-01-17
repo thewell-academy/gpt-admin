@@ -13,17 +13,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install System Dependencies
         run: sudo apt-get install -y git curl unzip xz-utils libglu1-mesa
 
       - name: Clone Flutter Repository
         run: git clone https://github.com/flutter/flutter.git -b master $HOME/flutter
 
       - name: Add Flutter to PATH
-        run: echo "export PATH=\$PATH:$HOME/flutter/bin" >> $GITHUB_ENV
+        run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Reload Environment
-        run: source $GITHUB_ENV
+      - name: Flutter Doctor
+        run: flutter doctor
 
       - name: Flutter Upgrade
         run: flutter upgrade
