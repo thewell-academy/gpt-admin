@@ -16,7 +16,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.0' # Updated to include Dart SDK 3.5.0 or later
+          flutter-version: '3.13.6' # Updated to include Dart SDK 3.5.0 or higher
 
       - name: Install Dependencies
         run: flutter pub get
