@@ -40,12 +40,7 @@ class AnswerOptionInfoModel {
   }
 
   bool isValid() {
-
-    if (option1.isNotEmpty && option2.isNotEmpty && option3.isNotEmpty && option4.isNotEmpty && option5.isNotEmpty && answer > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return true;
   }
 
 }

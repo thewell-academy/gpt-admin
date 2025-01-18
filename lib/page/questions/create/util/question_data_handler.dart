@@ -28,7 +28,7 @@ class QuestionDataHandler {
 
   static void updateAnswerOptionsInfo(
       QuestionModel questionModel,
-      int questionOrder, // newly added
+      int questionOrder,
       String selectedQuestionNumber,
       String selectedScore,
       List<String> abcOptionList,
@@ -36,29 +36,65 @@ class QuestionDataHandler {
       List<String> optionList,
       String selectedAnswer,
       String memo,
+      bool answerOptionNotExists,
       ) {
-    int questionNumber = int.tryParse(selectedQuestionNumber) ?? 0;
-    int questionScore = int.tryParse(selectedScore) ?? 0;
-    int answer = int.tryParse(selectedAnswer) ?? 0;
-    AnswerOptionInfoModel answerOptionInfoModel =
-    AnswerOptionInfoModel(
+
+    final questionNumber = int.tryParse(selectedQuestionNumber) ?? 0;
+    final questionScore = int.tryParse(selectedScore) ?? 0;
+    final answer = int.tryParse(selectedAnswer) ?? 0;
+
+    if (answerOptionNotExists) {
+
+      questionModel.answerOptionInfoList
+          .removeWhere((item) => item.questionOrder == questionOrder);
+
+      questionModel.answerOptionInfoList.add(
+        AnswerOptionInfoModel(
+          questionOrder: questionOrder,
+          questionNumber: questionNumber,
+          questionScore: questionScore,
+          abcOptionList: [],
+          questionText: selectedQuestionText,
+          option1: "",
+          option2: "",
+          option3: "",
+          option4: "",
+          option5: "",
+          answer: answer, // Represent "no answer"
+          memo: memo,
+        ),
+      );
+
+      // Stop further processing since no valid answers are needed
+      return;
+    }
+
+    // Create the AnswerOptionInfoModel
+    final answerOptionInfoModel = AnswerOptionInfoModel(
       questionOrder: questionOrder,
-        questionNumber: questionNumber,
-        questionScore: questionScore,
-        abcOptionList: abcOptionList,
-        questionText: selectedQuestionText,
-        option1: optionList[0],
-        option2: optionList[1],
-        option3: optionList[2],
-        option4: optionList[3],
-        option5: optionList[4],
-        answer: answer,
-        memo: memo
+      questionNumber: questionNumber,
+      questionScore: questionScore,
+      abcOptionList: abcOptionList,
+      questionText: selectedQuestionText,
+      option1: optionList[0],
+      option2: optionList[1],
+      option3: optionList[2],
+      option4: optionList[3],
+      option5: optionList[4],
+      answer: answer,
+      memo: memo,
     );
 
+    // Validate the model
     if (answerOptionInfoModel.isValid()) {
-      questionModel.answerOptionInfoList.removeWhere((item) => item.questionOrder == questionOrder);
+      // Remove old data and add the new model if valid
+      questionModel.answerOptionInfoList
+          .removeWhere((item) => item.questionOrder == questionOrder);
       questionModel.answerOptionInfoList.add(answerOptionInfoModel);
+    } else {
+      // Handle invalid data gracefully
+      print("AnswerOptionInfoModel is invalid. Skipping update.");
+      // Optionally, leave old data in place or provide user feedback
     }
   }
 }

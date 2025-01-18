@@ -7,7 +7,7 @@ import '../../question_model/question_model.dart';
 class DefaultQuestionInputField extends StatefulWidget {
 
   final QuestionModel questionModel;
-  final Function(QuestionModel, int,  String, String, List<String>, String, List<String>, String, String) onUpdate;
+  final Function(QuestionModel, int,  String, String, List<String>, String, List<String>, String, String, bool) onUpdate;
   final double questionTextFieldHeight;
   final int questionOrder;
 
@@ -51,9 +51,10 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
   @override
   void initState() {
     super.initState();
-    _abcControllers.add(
-        TextEditingController()
-    );
+    _abcControllers.add(TextEditingController());
+    for (var controller in _abcControllers) {
+      controller.addListener(_updateAbcOptionList);
+    }
   }
 
   void _addTextField() {
@@ -75,13 +76,9 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
 
   void _updateAbcOptionList() {
     setState(() {
-      abcOptionList.removeWhere((element) => true);
-      for (var element in _abcControllers) {
-        String value = element.text;
-        if (value.isNotEmpty) {
-          abcOptionList.add(value);
-        }
-      }
+      abcOptionList
+        ..clear()
+        ..addAll(_abcControllers.map((controller) => controller.text).where((text) => text.isNotEmpty));
     });
   }
 
@@ -92,23 +89,26 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
       controller.dispose();
     }
 
-    for (var entry in _abcControllers) {
-      entry.dispose();
+    for (var controller in _abcControllers) {
+      controller.removeListener(_updateAbcOptionList);
+      controller.dispose();
     }
+
     super.dispose();
   }
 
   void _updateParent() {
     widget.onUpdate(
-        widget.questionModel,
-        widget.questionOrder,
-        _selectedQuestionNumber?? '',
-        _selectedScore?? '',
-        abcOptionList,
-        _selectedQuestionText?? '',
-        _options,
-        _selectedAnswer?? '',
-        _memo
+      widget.questionModel,
+      widget.questionOrder,
+      _selectedQuestionNumber?? '',
+      _selectedScore?? '',
+      abcOptionList,
+      _selectedQuestionText?? '',
+      _options,
+      _selectedAnswer?? '',
+      _memo,
+      answerOptionNotExists ?? false,
     );
   }
 
@@ -180,7 +180,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                   },
                 ),
                 const Text(
-                  "보기 있음 (a b c, 가 나 다 등)",
+                  "보기 있음 (a b c, 가 나 다, 조건 등)",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -188,21 +188,22 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
             if (abcOptionExists)
               Column(
                 children: [
-                  ..._abcControllers.map((entry) {
+                  ..._abcControllers.map((controller) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Row(
                         children: [
                           Flexible(
-                            child: TextField(
-                              controller: entry,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: '내용',
-                              ),
-                              onChanged: (text) {
-                                _updateAbcOptionList();
+                            child: TextInputFieldAndRenderer(
+                              questionModel: widget.questionModel,
+                              title: "보기 내용",
+                              onUpdate: (String text) {
+                                setState(() {
+                                  controller.text = text; // Update the TextEditingController
+                                });
+                                _updateAbcOptionList(); // Update the abcOptionList
                               },
+                              height: 150,
                             ),
                           ),
                         ],
@@ -240,7 +241,9 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
           title: "문제",
           questionModel: widget.questionModel,
           onUpdate: (String updatedData) {
-            setState(() { _selectedQuestionText = updatedData; });
+            setState(() {
+              _selectedQuestionText = updatedData;
+            });
             _updateParent();
             },
           height: widget.questionTextFieldHeight,
@@ -259,6 +262,7 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                 onChanged: (value) {
                   setState(() {
                     answerOptionNotExists = value;
+                    _updateParent();
                   });
                 }
             ),
@@ -286,30 +290,6 @@ class _DefaultQuestionInputFieldState extends State<DefaultQuestionInputField> {
                       },
                       height: 150,
                   )
-                  // Text(
-                  //   "정답 ${index + 1}",
-                  //   style: const TextStyle(
-                  //     fontSize: 16,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 8),
-                  // TextField(
-                  //   controller: _optionControllers[index],
-                  //   decoration: InputDecoration(
-                  //     border: const OutlineInputBorder(),
-                  //     hintText: "보기 ${index + 1} 적기",
-                  //   ),
-                  //   style: const TextStyle(fontSize: 14),
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _options[index] = value;
-                  //     });
-                  //     _updateParent();
-                  //   },
-                  // ),
-                  // RichTextField(alignHorizontal: true, height: 100,),
-                  // const SizedBox(height: 16),
                 ],
 
               );

@@ -65,9 +65,6 @@ class _CreateQuestionOptionSelectorState extends State<CreateQuestionOptionSelec
     bool isSaving = false;
     bool isSuccess = false;
 
-    print("_questionRouterState == null: ${_questionRouterState == null}");
-    print("!_questionRouterState!.questionModel.isValid(): ${!_questionRouterState!.questionModel.isValid()}");
-    print("---");
     if (_questionRouterState == null || !_questionRouterState!.questionModel.isValid()) {
       return CupertinoAlertDialog(
         title: const Text("문제 데이터 검증 필요"),
