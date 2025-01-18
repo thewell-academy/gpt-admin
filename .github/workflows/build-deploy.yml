@@ -39,6 +39,12 @@ jobs:
       - name: Install Flutter Dependencies
         run: flutter pub get
 
+
+      - name: Make server_config.sh Executable
+        run: chmod +x ./server_config.sh
+      - name: Run Server Config Script
+        run: bash ./server_config.sh
+
       - name: Build Web
         run: flutter build web --release
 
